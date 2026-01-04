@@ -517,6 +517,14 @@
     /* Ensure draw-toolbar is column on desktop too (CSS safety net) */
     .note-area #draw-toolbar{ flex-direction: column !important; align-items: stretch !important; }
 
+
+    /* ===== Allow text selection for word/meaning (iOS copy) ===== */
+    #txt-word, #txt-meaning, .word-text, .meaning-text{
+        -webkit-user-select: text !important;
+        user-select: text !important;
+        -webkit-touch-callout: default !important;
+    }
+
 </style>
 </head>
 <body>
@@ -2585,6 +2593,19 @@ function updateLv(n, lv) {
     st.level = parseInt(lv);
     saveStatus(n, st);
 }
+
+/* ===== Enable long-press select/copy on iOS for word/meaning ===== */
+(function(){
+  const stop = (e)=>{ e.stopPropagation(); };
+  const els = [document.getElementById('txt-word'), document.getElementById('txt-meaning')].filter(Boolean);
+  els.forEach(el=>{
+    // Prevent swipe handlers from hijacking the gesture
+    el.addEventListener('pointerdown', stop, {passive:true});
+    el.addEventListener('touchstart', stop, {passive:true});
+    el.addEventListener('mousedown', stop, {passive:true});
+  });
+})();
+
 </script>
 </body>
 </html>
