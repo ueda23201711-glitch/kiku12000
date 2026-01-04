@@ -1,0 +1,2597 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title id="page-title">キクタンSuper12000</title>
+<style>
+    :root { 
+        --primary: #4B1E83; 
+        --primary-light: #4B1E83cc;
+        --bg: #f0f7f9; 
+        --card-bg: #ffffff; 
+        --text: #1c1c1e; 
+        --gray: #6c757d; 
+    }
+    body { 
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+        background: var(--bg); 
+        color: var(--text); 
+        margin: 0; 
+        padding: 0; 
+        display: flex; 
+        flex-direction: column; 
+        height: 100dvh; 
+        overflow: hidden; 
+    }
+    .hidden { display: none !important; }
+    .screen { 
+        display: none; 
+        flex-direction: column; 
+        height: 100%; 
+        padding: 15px; 
+        box-sizing: border-box; 
+    }
+    .active { display: flex; }
+    #screen-setup, #screen-list { overflow-y: auto; }
+
+    h2 { margin: 0 0 15px 0; text-align: center; font-size: 1.4rem; color: var(--primary); font-weight: 700; }
+    .panel { background: var(--card-bg); padding: 15px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 15px; }
+
+    .config-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+    .config-row:last-child { border-bottom: none; }
+    label { font-weight: 600; color: #444; font-size: 0.9rem; }
+    input[type="number"], input[type="text"] { width: 70px; padding: 8px; border-radius: 8px; border: 1px solid #ced4da; font-size: 1rem; text-align: center; }
+    input[type="text"] { width: 180px; text-align: left; }
+    input[type="color"] { width: 50px; height: 40px; border: none; background: transparent; cursor: pointer; }
+    select { padding: 8px; border-radius: 8px; font-size: 0.9rem; border: 1px solid #ced4da; background: white; }
+
+    .flashcard {
+        flex: 1; 
+        background: var(--card-bg); 
+        border-radius: 24px; 
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        justify-content: flex-start;
+        text-align: center; 
+        padding: 20px; 
+        position: relative; 
+        margin-bottom: 10px; 
+        touch-action: none; 
+        user-select: none;
+        overflow: hidden;
+        border: 2px solid transparent;
+        transition: border-color 0.2s;
+        gap: 6px;
+    }
+    .word-text { font-size: 2.4rem; font-weight: 800; margin: 34px 0 6px 0; color: var(--primary); line-height: 1.1; word-break: break-word; cursor: pointer; }
+    .meaning-text { font-size: 1.2rem; color: #333; margin-top: 8px; min-height: 1.5em; line-height: 1.4; font-weight: 500; }
+    .badge { position: absolute; top: 15px; right: 15px; background: var(--primary); color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; }
+    .btn-audio {
+        position:absolute; top: 12px; left: 12px;
+        width: 44px; height: 44px; border-radius: 14px;
+        background: rgba(0,0,0,0.05);
+        display:flex; align-items:center; justify-content:center;
+        font-size: 1.15rem;
+    }
+
+    button { border: none; cursor: pointer; font-size: 1rem; font-weight: 700; padding: 12px; border-radius: 12px; transition: all 0.2s; }
+    button:active { transform: scale(0.96); opacity: 0.9; }
+    .btn-block { width: 100%; display: block; margin-bottom: 10px; }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-secondary { background: var(--primary-light); color: white; }
+    .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+    .btn-danger { background: #ae2012; color: white; }
+    .btn-success { background: #2d6a4f; color: white; }
+    .btn-neutral { background: #dee2e6; color: #333; }
+
+    .nav-controls { display: flex; gap: 8px; margin-bottom: 10px; width: 100%; }
+    .nav-btn { flex: 1; padding: 10px; background: #e9ecef; color: #495057; font-size: 0.85rem; }
+
+    .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 5px; }
+    .level-bar { display: flex; gap: 6px; margin-top: 10px; justify-content: center; }
+    .level-btn { width: 36px; height: 36px; border-radius: 50%; border: 2px solid #ced4da; background: white; color: #666; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; }
+    .level-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+    .table-container { flex: 1; overflow-y: auto; background: white; border-radius: 12px; border: 1px solid #eee; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th { position: sticky; top: 0; background: #f8f9fa; z-index: 1; padding: 10px; text-align: left; border-bottom: 2px solid #dee2e6; }
+    td { padding: 10px; border-bottom: 1px solid #eee; }
+
+    #data-editor { width: 100%; height: 200px; font-family: monospace; font-size: 0.8rem; padding: 10px; box-sizing: border-box; border-radius: 8px; border: 1px solid #ccc; margin-bottom: 10px; }
+
+    #swipe-hint {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        display: flex; align-items: center; justify-content: center;
+        background: rgba(255,255,255,0.7); color: var(--primary);
+        font-weight: bold; pointer-events: none; opacity: 0; transition: opacity 0.3s;
+        font-size: 1.5rem; z-index: 10;
+    }
+
+    /* Notes */
+    .note-area{
+        width: 100%;
+        margin-top: 10px;
+        display:flex;
+        flex-direction: column;
+        gap: 8px;
+        text-align:left;
+    }
+    .note-title{
+        font-size:0.85rem; font-weight:800; color:#333; display:flex; justify-content:space-between; align-items:center;
+    }
+    .note-text{
+        width:100%;
+        min-height: 70px;
+        resize: vertical;
+        border-radius: 12px;
+        border: 1px solid #d6dbe0;
+        padding: 10px;
+        font-size: 0.95rem;
+        box-sizing: border-box;
+        background:#fff;
+    }
+    .draw-toolbar{
+        display:flex; gap:6px; flex-wrap:wrap; align-items:center;
+    }
+    .tool-btn{
+        padding:8px 10px;
+        border-radius: 12px;
+        background:#e9ecef;
+        color:#333;
+        font-size:0.85rem;
+        font-weight:800;
+    }
+    .tool-btn.active{
+        background: var(--primary);
+        color:#fff;
+    }
+    .swatch{
+        width:30px; height:30px;
+        border-radius: 10px;
+        border: 2px solid rgba(0,0,0,0.1);
+        cursor:pointer;
+        box-sizing: border-box;
+    }
+    .swatch.active{ border-color: var(--primary); }
+    .range{
+        display:flex; gap:6px; align-items:center;
+        font-size:0.85rem; color:#444;
+        background: rgba(0,0,0,0.03);
+        padding: 6px 10px;
+        border-radius: 12px;
+    }
+    .range input{ width: 120px; }
+    .canvas-wrap{
+        width:100%;
+        border-radius: 16px;
+        border: 1px solid #d6dbe0;
+        overflow:hidden;
+        background: #fff;
+        position: relative;
+        touch-action: none; /* allow drawing */
+    }
+    canvas#note-canvas{
+        width:100%;
+        height: 180px;
+        display:block;
+        background: #fff;
+    }
+
+    /* ===== Responsive: iPhone / small screens ===== */
+    @media (max-width: 480px) {
+        /* Make sure the bottom of handwriting area isn't clipped */
+        .flashcard{
+            padding: 14px; padding-bottom: 10px;
+            overflow: auto;                 /* allow scroll if still needed */
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .nav-controls{
+            margin-bottom: 6px;
+            gap: 6px;
+        }
+        .nav-btn{
+            padding: 6px 8px;               /* smaller vertical size */
+            font-size: 0.8rem;
+            border-radius: 10px;
+        }
+
+        .word-text{
+            margin-top: 26px;
+            margin-bottom: 4px;
+            font-size: 2.05rem;
+        }
+        #btn-show-meaning{
+            margin-top: 6px !important;
+            padding: 6px 14px !important;
+            font-size: 0.8rem !important;
+        }
+
+        .note-title{ margin-top: 6px; }
+        .note-text{
+            min-height: 42px;               /* one-line-ish */
+            height: 42px;
+            resize: none;
+            padding: 9px 12px;
+        }
+        .range{ padding: 4px 10px; }
+        canvas#note-canvas{
+            height: 260px;                  /* more room while fitting screen */
+        }
+
+        /* Make "中断" more visible */
+        #btn-exit{
+            background: #ae2012 !important;
+            color: #fff !important;
+            border: none !important;
+            padding: 6px 12px !important;
+            font-size: 0.8rem !important;
+            border-radius: 999px !important;
+        }
+    }
+    /* Very small height (landscape phone) */
+    @media (max-height: 520px) {
+        .flashcard{ overflow:auto; -webkit-overflow-scrolling: touch; }
+        canvas#note-canvas{ height: 200px; }
+        .note-text{ height: 40px; min-height: 40px; }
+        .nav-btn{ padding: 5px 8px; }
+    }
+
+
+    .range-inline{
+        margin-left:auto;
+        padding: 6px 10px;
+    }
+    .range-inline input{ width: 120px; }
+
+    /* Small phones: keep controls in one row and save vertical space */
+    @media (max-width: 480px) {
+        #screen-study{
+        .note-area{ gap: 6px; }
+        .draw-toolbar{
+            flex-wrap: nowrap;                /* one row */
+            overflow-x: auto;                 /* allow horizontal scroll if too tight */
+            -webkit-overflow-scrolling: touch;
+            gap: 6px;
+            padding-bottom: 2px;
+        }
+        .tool-btn{ padding: 7px 9px; font-size: 0.82rem; border-radius: 12px; }
+        .range-inline{
+            background: rgba(0,0,0,0.03);
+            padding: 5px 8px;
+            border-radius: 12px;
+            white-space: nowrap;
+        }
+        .range-inline input{ width: 90px; }
+        .swatch{ width: 28px; height: 28px; border-radius: 10px; }
+        #customColor{ width: 44px; height: 34px; }
+    }
+
+
+    /* Layout refinements */
+    .note-area{ margin-top: auto; } /* push notes (incl. canvas) towards bottom of card */
+    .canvas-wrap{ flex: 1 1 auto; }
+    #note-canvas{ height: 100%; }
+
+    @media (max-width: 480px) {
+        .option-row{
+            flex-wrap: nowrap;            /* keep color + thickness on one line */
+            justify-content: space-between;
+            align-items: center;
+        }
+        .option-row > div{ flex: 0 0 auto; }
+        .option-row .range-inline{ flex: 0 0 auto; }
+        .option-row .range-inline input{ width: 120px; }
+    }
+
+
+    @media (max-width: 480px) {
+        .note-area{ flex: 1 1 auto; }
+    }
+
+
+    /* ===== Toolbar layout (stable on iPhone) ===== */
+    .draw-toolbar{ display:flex; flex-direction:column; gap:8px; width:100%; }
+    .tool-row{
+        display:flex;
+        gap:6px;
+        width:100%;
+        justify-content:space-between;
+        flex-wrap:nowrap; /* always one row */
+    }
+    .tool-row .tool-btn{
+        flex:1 1 0;
+        min-width: 0;
+        white-space: nowrap;
+        text-align:center;
+    }
+    .option-row{
+        display:flex;
+        gap:10px;
+        width:100%;
+        align-items:center;
+        justify-content:space-between;
+        flex-wrap:nowrap; /* one row: colors + thickness */
+    }
+    .color-row{
+        display:flex;
+        gap:6px;
+        align-items:center;
+        flex:0 0 auto;
+    }
+    .range-inline{
+        margin-left: 0;
+        white-space: nowrap;
+        flex:0 0 auto;
+        padding: 6px 10px;
+    }
+
+    @media (max-width: 480px) {
+        /* Keep two rows exactly */
+        .draw-toolbar{ gap:8px; }
+        .tool-row .tool-btn{
+            padding: 7px 6px;
+            font-size: 0.82rem;
+            line-height: 1.1;
+        }
+        .option-row{ gap:8px; }
+        .range-inline input{ width: 120px; }
+        /* Prevent accidental vertical stacking */
+        .tool-btn{ word-break: keep-all; }
+    }
+
+
+    /* ===== iPhone ergonomics ===== */
+    @media (max-width: 480px) {
+        /* Move the card a bit lower for easier one-hand swipe */
+        #screen-study{
+            padding-top: 40px;
+        }
+
+        /* Shrink bottom controls (Know/Don't know + levels) */
+        #controls-card .btn-success,
+        #controls-card .btn-danger{
+            padding: 10px 10px;
+            font-size: 0.95rem;
+        }
+        .level-bar{ gap: 5px; margin-top: 8px; }
+        .level-btn{
+            width: 32px;
+            height: 32px;
+            font-size: 0.85rem;
+        }
+    }
+
+
+    /* ===== Toolbar: keep stable on PC/iPad too ===== */
+    .tool-row{ flex-wrap: nowrap !important; }
+    .option-row{ flex-wrap: nowrap !important; }
+    .option-row .range-inline input{ width: 180px; }
+
+
+    /* Prevent iOS selection/callout while drawing */
+    #card-area, .note-area, .draw-toolbar, .tool-row, .option-row, .range-inline, .color-row,
+    .tool-btn, .swatch, #pen-size-label, #btn-show-meaning, #txt-word, #txt-meaning {
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+    }
+    #note-canvas{
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+    }
+
+
+    /* ===== Fix toolbar layout on PC / iPad (match smartphone layout) ===== */
+    #draw-toolbar.draw-toolbar { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+
+    /* 1st row: tools (always horizontal) */
+    #draw-toolbar .tool-row{
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        gap: 6px;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+    }
+    #draw-toolbar .tool-row .tool-btn{
+        flex: 1 1 0;
+        min-width: 0;
+        white-space: nowrap;
+        text-align: center;
+    }
+
+    /* 2nd row: color + thickness (always horizontal) */
+    #draw-toolbar .option-row{
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        gap: 10px;
+        width: 100%;
+        align-items: center;
+        justify-content: space-between;
+    }
+    #draw-toolbar .color-row{
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        gap: 6px;
+        align-items: center;
+    }
+
+    /* Make sure color controls don't stack vertically on desktop */
+    #draw-toolbar .swatch{
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        border-radius: 10px;
+        box-sizing: border-box;
+    }
+    #draw-toolbar #customColor{
+        width: 50px;
+        height: 40px;
+        border: none;
+        background: transparent;
+        padding: 0;
+    }
+    #draw-toolbar .range-inline{
+        white-space: nowrap;
+        padding: 6px 10px;
+        border-radius: 12px;
+        background: rgba(0,0,0,0.03);
+    }
+    #draw-toolbar .range-inline input{ width: 180px; }
+
+    /* On very wide screens, avoid overly stretched buttons */
+    @media (min-width: 900px) {
+        #draw-toolbar .tool-row .tool-btn{ max-width: 180px; }
+    }
+
+
+    /* ===== FINAL OVERRIDE: toolbar must match mobile layout on ALL devices ===== */
+    #draw-toolbar { 
+        display:flex !important; 
+        flex-direction:column !important; 
+        gap:8px !important; 
+        width:100% !important;
+        align-items:stretch !important;
+    }
+    #draw-toolbar > .tool-row{
+        display:flex !important;
+        flex-direction:row !important;
+        flex-wrap:nowrap !important;
+        width:100% !important;
+        gap:6px !important;
+        justify-content:space-between !important;
+        align-items:center !important;
+    }
+    #draw-toolbar > .tool-row > .tool-btn{
+        flex:1 1 0 !important;
+        min-width:0 !important;
+        white-space:nowrap !important;
+        text-align:center !important;
+        padding: 8px 10px;
+    }
+    #draw-toolbar > .option-row{
+        display:flex !important;
+        flex-direction:row !important;
+        flex-wrap:nowrap !important;
+        width:100% !important;
+        gap:10px !important;
+        justify-content:space-between !important;
+        align-items:center !important;
+    }
+    #draw-toolbar > .option-row > .color-row{
+        display:flex !important;
+        flex-direction:row !important;
+        flex-wrap:nowrap !important;
+        gap:6px !important;
+        align-items:center !important;
+    }
+    #draw-toolbar .swatch{ display:inline-block !important; }
+    #draw-toolbar #customColor{ display:inline-block !important; }
+
+    /* Keep the thickness control on the right and compact */
+    #draw-toolbar .range-inline{
+        display:flex !important;
+        align-items:center !important;
+        gap:8px !important;
+        white-space:nowrap !important;
+        flex:0 0 auto !important;
+    }
+    #draw-toolbar .range-inline input{ width: 180px; }
+
+    /* If the screen is narrow (tablet split view), allow horizontal scroll rather than wrapping */
+    @media (max-width: 820px) {
+        #draw-toolbar > .tool-row{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+        #draw-toolbar > .option-row{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+        #draw-toolbar > .tool-row > .tool-btn{ flex:0 0 auto !important; }
+    }
+
+
+    /* Ensure draw-toolbar is column on desktop too (CSS safety net) */
+    .note-area #draw-toolbar{ flex-direction: column !important; align-items: stretch !important; }
+
+
+/* ===== Allow text selection for vocabulary (iPhone copy OK) ===== */
+.word-text{
+  -webkit-user-select: text !important;
+  user-select: text !important;
+  -webkit-touch-callout: default !important;
+}
+</style>
+</head>
+<body>
+
+    <!-- 1. Setup Screen -->
+    <div id="screen-setup" class="screen active">
+        <h2 id="display-title">キクタンSuper12000</h2>
+
+        <div class="panel">
+            <div class="config-row">
+                <label>アプリ名</label>
+                <input type="text" id="inpTitle" value="キクタンSuper12000" onchange="updateTheme()">
+            </div>
+            <div class="config-row">
+                <label>テーマカラー</label>
+                <input type="color" id="inpColor" value="#4B1E83" onchange="updateTheme()">
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="config-row">
+                <label>学習範囲 (No.)</label>
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    <input type="number" id="inpStart" value="1" min="1" max="5000"> 〜 <input type="number" id="inpEnd" value="100" min="1" max="5000">
+                </div>
+            </div>
+            <select id="selQuickRange" onchange="handleQuickRangeChange(this.value)" style="width:100%; margin-top:5px;">
+                <option value="">クイック選択（100語単位）</option>
+                <option value="1-100">1 - 100</option>
+                <option value="101-200">101 - 200</option>
+                <option value="201-300">201 - 300</option>
+                <option value="301-400">301 - 400</option>
+                <option value="401-500">401 - 500</option>
+                <option value="501-600">501 - 600</option>
+                <option value="601-700">601 - 700</option>
+                <option value="701-800">701 - 800</option>
+                <option value="801-900">801 - 900</option>
+                <option value="901-1000">901 - 1000</option>
+                <option value="1001-1100">1001 - 1100</option>
+                <option value="1101-1200">1101 - 1200</option>
+                <option value="1-1200">1 - 1200 (全範囲)</option>
+            </select>
+        </div>
+
+        <div class="panel">
+            <div class="config-row">
+                <label for="chkReview">「わからない」のみ復習</label>
+                <input type="checkbox" id="chkReview">
+            </div>
+            <div class="config-row">
+                <label>理解度フィルター</label>
+                <select id="selLevel">
+                    <option value="all">すべて</option>
+                    <option value="0">未学習 (LV.0)</option>
+                    <option value="1">LV.1 (苦手)</option>
+                    <option value="2">LV.2</option>
+                    <option value="3">LV.3</option>
+                    <option value="4">LV.4</option>
+                    <option value="5">LV.5 (完璧)</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="btn-primary btn-block" onclick="startApp('card')">フラッシュカード開始</button>
+        <button class="btn-secondary btn-block" onclick="startApp('listen')">聞き流しモード開始</button>
+
+        <button class="btn-neutral btn-block" onclick="showList()">学習データ一覧 / 管理</button>
+        <div style="text-align:center; font-size:0.85rem; color:#999; margin-top:5px;">
+            登録数: <span id="totalCount">-</span>語
+        </div>
+    </div>
+
+    <!-- 2. Study Screen -->
+    <div id="screen-study" class="screen">
+        <div style="display:flex; justify-content:space-between; align-items:center; color:#666; font-size:0.85rem; margin-bottom:8px;">
+            <span id="progress-text">1 / 10</span>
+            <button class="btn-outline" style="padding:4px 10px; font-size:0.75rem; border-radius:20px;" onclick="goHome()" id="btn-exit">中断</button>
+        </div>
+
+        <div class="nav-controls">
+            <button class="nav-btn" onclick="manualMove(-1)">← 前</button>
+            <button class="nav-btn" onclick="manualMove(1)">次 →</button>
+        </div>
+
+        <div class="flashcard" id="card-area" aria-label="flashcard">
+            <div id="swipe-hint"></div>
+            <div id="badge-lv" class="badge">LV.0</div>
+            <button class="btn-audio" id="btn-audio" title="発音をもう一度" onclick="playWord(event)">🔊</button>
+
+            <div id="txt-word" class="word-text" onclick="playWord(event)">Word</div>
+            <div id="txt-meaning" class="meaning-text hidden">意味</div>
+
+            <button id="btn-show-meaning" class="btn-neutral" style="margin-top:10px; font-size:0.85rem; padding:8px 18px; border-radius:20px;" onclick="revealMeaning()">
+                日本語訳を表示
+            </button>
+
+            <!-- Notes -->
+            <div class="note-area" id="note-area">
+                <div class="note-title">
+                    <span>このカードのメモ</span>
+                    <button class="tool-btn" style="padding:6px 10px" onclick="clearAllNotes(event)" title="文字メモと手書きメモを全消し">全消し</button>
+                </div>
+
+                <textarea id="note-text" class="note-text" rows="1" placeholder="キーボードでメモ（このカード専用）"></textarea>
+
+                <div class="draw-toolbar" id="draw-toolbar">
+                <div class="tool-row">
+                    <button class="tool-btn active" id="tool-pen" onclick="setTool('pen', event)">ペン</button>
+                    <button class="tool-btn" id="tool-highlighter" onclick="setTool('highlighter', event)">蛍光ペン</button>
+                    <button class="tool-btn" id="tool-eraser" onclick="setTool('eraser', event)">消しゴム</button>
+                    <button class="tool-btn" onclick="clearCanvas(event)" title="手書きだけ消す">手書クリア</button>
+                </div>
+                <div class="option-row">
+                    <div class="color-row">
+                        <div class="swatch" data-color="#000000" style="background:#000000" onclick="pickColor('#000000', event)" title="黒"></div>
+                        <div class="swatch" data-color="#e63946" style="background:#e63946" onclick="pickColor('#e63946', event)" title="赤"></div>
+                        <input type="color" id="customColor" value="#000000" onchange="pickColor(this.value, event)" title="色を選ぶ">
+                    </div>
+                    <div class="range range-inline" title="太さ">
+                        <span>太さ</span>
+                        <input type="range" id="pen-size" min="2" max="24" value="5">
+                        <span id="pen-size-label">5</span>
+                    </div>
+                </div>
+            </div>
+
+                <div class="canvas-wrap" id="canvas-wrap">
+                    <canvas id="note-canvas"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Mode Controls -->
+        <div id="controls-card">
+            <div class="controls">
+                <button class="btn-success" onclick="answer(true)">わかる</button>
+                <button class="btn-danger" onclick="answer(false)">わからない</button>
+            </div>
+            <div class="level-bar">
+                <button class="level-btn" onclick="setLevel(1)">1</button>
+                <button class="level-btn" onclick="setLevel(2)">2</button>
+                <button class="level-btn" onclick="setLevel(3)">3</button>
+                <button class="level-btn" onclick="setLevel(4)">4</button>
+                <button class="level-btn" onclick="setLevel(5)">5</button>
+            </div>
+        </div>
+
+        <!-- Listening Mode Controls -->
+        <div id="controls-listen" class="hidden text-center">
+            <p id="listen-status-label" style="color:var(--primary); font-weight:bold; font-size:0.9rem; margin:8px 0;">AUTO PLAYING...</p>
+            <button class="btn-neutral btn-block" onclick="togglePause()" id="btn-pause">一時停止</button>
+        </div>
+    </div>
+
+    <!-- 3. List/Manage Screen -->
+    <div id="screen-list" class="screen">
+        <h2>データ一覧 / 編集</h2>
+        <div class="filter-bar" style="margin-bottom:10px; display:flex; gap:5px;">
+            <select id="selListLevelFilter" onchange="renderListTable()" style="flex:1">
+                <option value="all">全レベルを表示</option>
+                <option value="0">LV.0 (未着手)</option>
+                <option value="1">LV.1</option>
+                <option value="2">LV.2</option>
+                <option value="3">LV.3</option>
+                <option value="4">LV.4</option>
+                <option value="5">LV.5 (完璧)</option>
+            </select>
+            <select id="selListResultFilter" onchange="renderListTable()" style="flex:1">
+                <option value="all">全結果</option>
+                <option value="unknown">「わからない」のみ</option>
+                <option value="new">未回答のみ</option>
+            </select>
+        </div>
+        <div class="table-container">
+            <table id="list-table">
+                <thead><tr><th>No</th><th>単語 / 意味</th><th style="text-align:center">LV</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="panel" style="margin-top:10px;">
+            <textarea id="data-editor" placeholder="word	meaning	number (TAB区切り)"></textarea>
+            <button class="btn-secondary btn-block" onclick="updateMasterData()">データを更新保存</button>
+        </div>
+        <button class="btn-primary btn-block" onclick="goHome()">設定に戻る</button>
+    </div>
+
+<script>
+let masterTsv = `memorize	(動) 暗記する、記憶する  	1
+evolve	(動) 進化する、発展させる  	2
+blot	(動/名) 汚す、拭き取る、シミ  	3
+glide	(動) 滑るように動く、滑走する  	4
+utilize	(動) 利用する、活用する  	5
+overwhelm	(動) 圧倒する、打ちのめす  	6
+motivate	(動) 動機づける、やる気にさせる  	7
+scramble	(動) 争奪する、這って進む  	8
+boycott	(動/名) 拒否する、ボイコット  	9
+infect	(動) 感染させる、伝染する  	10
+rally	(動/名) 集結させる、回復、集会  	11
+accommodate	(動) 収容する、適応させる  	12
+peck	(動) つつく、軽くキスする  	13
+spit	(動/名) 吐く、唾を吐く  	14
+frustrate	(動) 挫折させる、苛立たせる  	15
+isolate	(動) 孤立させる、分離する  	16
+ecosystem	(名) 生態系  	17
+hostility	(名) 敵意、反感  	18
+stack	(名/動) 積み重ね、積み上げる  	19
+withdrawal	(名) 撤退、引き出し  	20
+athletics	(名) 競技、運動競技  	21
+stimulus	(名) 刺激、励み  	22
+inquiry	(名) 調査、問い合わせ  	23
+correspondent	(名) 特派員、通信員  	24
+boom	(名/動) 急騰、景気、とどろく  	25
+handicap	(名/動) 不利な条件、障害  	26
+treasury	(名) 財務省、宝庫  	27
+fleet	(名) 艦隊、船団  	28
+preceding	(形) 先立つ、前の  	29
+cartoon	(名) 漫画、アニメ  	30
+remainder	(名) 残り、余り  	31
+senator	(名) 上院議員  	32
+booking	(名) 予約  	33
+denial	(名) 否定、拒否  	34
+ridge	(名) 尾根、山の背  	35
+succession	(名) 継承、連続  	36
+tenant	(名) 借家人、借地人  	37
+diagram	(名) 図解、図面  	38
+banner	(名) 旗、のぼり、垂れ幕  	39
+rainfall	(名) 降雨量、雨降り  	40
+junk	(名) クズ、ガラクタ  	41
+voltage	(名) 電圧  	42
+fitness	(名) 健康、適合性  	43
+inheritance	(名) 継承、遺産  	44
+banquet	(名) 祝宴、宴会  	45
+defendant	(名) 被告（人）  	46
+postage	(名) 郵便料金、郵送料  	47
+muslim	(名/形) イスラム教徒  	48
+tablet	(名) 錠剤、平板  	49
+viewer	(名) 視聴者、見る人  	50
+microscope	(名) 顕微鏡  	51
+taxation	(名) 課税、税制  	52
+rebellion	(名) 反乱、暴動  	53
+cargo	(名) 貨物、積み荷  	54
+accountant	(名) 会計士  	55
+claus	(名) 条項（※Clauseの別綴り/人名）  	56
+reasoning	(名) 推論、論理的思考  	57
+carrier	(名) 運送業者、通信会社、運ぶもの  	58
+framework	(名) 枠組み、構造  	59
+librarian	(名) 司書、図書館員  	60
+cluster	(名/動) 群れ、集団、群がる  	61
+slavery	(名) 奴隷制度、奴隷の身分  	62
+intellect	(名) 知性、知力  	63
+grove	(名) 小さな森、林  	64
+ethical	(形) 倫理的な、道徳上の  	65
+mellow	(形) 熟した、芳醇な、円熟した  	66
+troublesome	(形) 厄介な、面倒な  	67
+dreadful	(形) 恐ろしい、ひどい  	68
+countless	(形) 数え切れない、無数の  	69
+energetic	(形) 精力的な、活動的な  	70
+worthwhile	(形) 価値がある、やりがいのある  	71
+controversial	(形) 論争の的となる  	72
+inadequate	(形) 不十分な、不適切な  	73
+comparative	(形) 比較の、相対的な  	74
+persistent	(形) 粘り強い、持続的な  	75
+devoted	(形) 献身的な、熱心な  	76
+disappointing	(形) 失望させる、期待外れの  	77
+exclusive	(形) 独占的な、排他的な  	78
+annoying	(形) 迷惑な、いらだたせる  	79
+unconscious	(形) 無意識の、意識不明の  	80
+embarrassed	(形) 恥ずかしい、きまりが悪い  	81
+dedicated	(形) 献身的な、専用の  	82
+insufficient	(形) 不十分な、不足している  	83
+neighboring	(形) 隣接する、近所の  	84
+depressed	(形) 意気消沈した、不景気の  	85
+instructive	(形) 教育的な、有益な  	86
+lacking	(形) 欠けている、不足している  	87
+residential	(形) 住宅の、居住用の  	88
+vicious	(形) 悪意のある、激しい  	89
+diverse	(形) 多様な、異なった  	90
+competing	(形) 競合する  	91
+convincing	(形) 説得力のある  	92
+explosive	(形/名) 爆発的な、爆発物  	93
+continual	(形) 絶え間ない、断続的な  	94
+topical	(形) 時事問題の、話題の  	95
+immature	(形) 未熟な、子供っぽい  	96
+navel	(名) へそ、中心  	97
+everlasting	(形) 永遠の、不朽の  	98
+co-operative	(形) 協力的な、協同組合の  	99
+solitary	(形) 孤独な、ただ一つの  	100
+worldly	(形) 世俗的な、俗世の  	101
+needy	(形) 困窮している、貧しい  	102
+conditional	(形) 条件付きの  	103
+immortal	(形) 不死の、不朽の  	104
+classified	(形) 分類された、機密の  	105
+trustworthy	(形) 信頼できる  	106
+plentiful	(形) 豊富な  	107
+irresponsible	(形) 無責任な  	108
+attentive	(形) 注意深い、思いやりのある  	109
+constructive	(形) 建設的な  	110
+fuzzy	(形) ぼやけた、うぶ毛の生えた  	111
+genetic	(形) 遺伝子の  	112
+recollect	(動) 思い出す  	113
+hall	(名) 玄関、廊下、会館  	114
+reconcile	(動) 和解させる、一致させる  	115
+blink	(動/名) まばたきする  	116
+dim	(形) ほの暗い、ぼんやりした  	117
+cherish	(動) 大切にする  	118
+exert	(動) 行使する、努力する  	119
+rot	(動/名) 腐る、腐敗  	120
+nourish	(動) 養う、栄養を与える  	121
+bruise	(名/動) 打撲傷、あざ、傷つける  	122
+incorporate	(動) 組み入れる、法人化する  	123
+concede	(動) 認める、譲歩する  	124
+withstand	(動) 耐える、抵抗する  	125
+embark	(動) 乗り出す、乗船する  	126
+allege	(動) （証拠なく）主張する  	127
+dispatch	(動/名) 派遣する、発送する  	128
+console	(動) 慰める  	129
+lesson	(名) 教訓、授業  	130
+thor	(名) （北欧神話の）トール  	131
+subtract	(動) 引き算する、控除する  	132
+forsake	(動) 見捨てる、見限る  	133
+contend	(動) 競う、主張する  	134
+indulge	(動) ふける、甘やかす  	135
+bestow	(動) 授ける、贈る  	136
+perplex	(動) 当惑させる  	137
+clutch	(動/名) ぐいっと掴む、把握  	138
+testify	(動) 証言する  	139
+administer	(動) 管理する、運営する  	140
+manifest	(形/動) 明白な、明らかにする  	141
+distract	(動) （気を）散らす、そらす  	142
+recite	(動) 暗誦する、詳述する  	143
+foresee	(動) 予見する  	144
+commend	(動) 褒める、推薦する  	145
+arouse	(動) 呼び起こす、刺激する  	146
+presume	(動) 推定する、思う  	147
+chuckle	(動/名) くすくす笑う  	148
+sip	(動/名) ちびちび飲む  	149
+donate	(動) 寄付する  	150
+prescribe	(動) 処方する、規定する  	151
+conform	(動) 従う、一致する  	152
+hatch	(動) 孵化する、企てる  	153
+distort	(動) 歪める  	154
+illuminate	(動) 照らす、解明する  	155
+partake	(動) 参加する、共にする  	156
+supervise	(動) 監督する  	157
+overturn	(動) ひっくり返す、覆す  	158
+soothe	(動) 宥める、和らげる  	159
+elevate	(動) 高める、持ち上げる  	160
+cater	(動) 料理をまかなう、要望に応える  	161
+enhance	(動) 高める、増す  	162
+dazzle	(動) 目をくらませる  	163
+navigate	(動) 航行する、操縦する  	164
+hinder	(動) 妨げる  	165
+reinforce	(動) 強化する  	166
+certify	(動) 証明する、保証する  	167
+embrace	(動/名) 抱きしめる、受け入れる  	168
+profess	(動) 公言する、自称する  	169
+proceed	(動) 進む、続行する  	170
+uphold	(動) 支持する、維持する  	171
+clarify	(動) 明確にする  	172
+thrive	(動) 繁栄する、成長する  	173
+comprise	(動) 構成される、含む  	174
+excel	(動) 優れている  	175
+dictate	(動) 指揮する、書き取らせる  	176
+intrude	(動) 侵入する、押し入る  	177
+refrain	(動) 控える、やめる  	178
+subdue	(動) 制圧する、和らげる  	179
+slip	(動/名) 滑る、紙片  	180
+differentiate	(動) 区別する、差別化する  	181
+coincide	(動) 同時に起こる、一致する  	182
+prop	(名/動) 支柱、支える  	183
+stab	(動/名) 刺す  	184
+pave	(動) 舗装する  	185
+wither	(動) しおれる、衰える  	186
+glare	(動/名) 睨みつける、ぎらつく光  	187
+circulate	(動) 循環する、流通する  	188
+nominate	(動) 指名する、推薦する  	189
+summarize	(動) 要約する  	190
+reckon	(動) 考える、計算する  	191
+tumble	(動/名) 転ぶ、暴落する  	192
+flush	(動/名) 赤らめる、（水を）流す  	193
+compensate	(動) 補償する、埋め合わせる  	194
+amend	(動) 修正する、改正する  	195
+heed	(動/名) 注意を払う  	196
+enforce	(動) 施行する、強いる  	197
+contradict	(動) 矛盾する、否定する  	198
+induce	(動) 誘発する、勧誘する  	199
+discard	(動) 捨てる、放棄する  	200
+simplify	(動) 簡素化する  	201
+cling	(動) 執着する、しがみつく  	202
+meditate	(動) 瞑想する、企てる  	203
+lament	(動/名) 嘆く、哀悼  	204
+skim	(動) すくい取る、ざっと読む  	205
+displace	(動) 取って代わる、強制退去させる  	206
+hush	(動/名) 静かにさせる、沈黙  	207
+divert	(動) そらす、転換する  	208
+paralyze	(動) 麻痺させる  	209
+enchant	(動) 魅了する  	210
+pluck	(動/名) 摘む、引き抜く、勇気  	211
+doom	(名/動) 運命、破滅、運命づける  	212
+slant	(動/名) 傾く、傾向  	213
+formulate	(動) 公式化する、策定する  	214
+contemplate	(動) 熟考する、沈思する  	215
+preside	(動) 議長を務める、司会する  	216
+wreck	(名/動) 難破、壊滅、破壊する  	217
+grumble	(動/名) 不平を言う  	218
+confer	(動) 協議する、授与する  	219
+toil	(動/名) 骨折って働く、苦労  	220
+enrich	(動) 豊かにする  	221
+adore	(動) 崇拝する、敬愛する  	222
+surpass	(動) 上回る、凌ぐ  	223
+linger	(動) 残る、居残る  	224
+agenda	(名) 協議事項、予定表  	225
+thesis	(名) 論文、命題  	226
+oppression	(名) 抑圧、苦難  	227
+expertise	(名) 専門的知識  	228
+staple	(名/形) 主要産物、主要な  	229
+arctic	(形/名) 北極の  	230
+creditor	(名) 債権者  	231
+incentive	(名) 動機、励み、報奨金  	232
+diameter	(名) 直径  	233
+premiere	(名/動) 初演、プレミヤ  	234
+vein	(名) 静脈、気分  	235
+bid	(動/名) 入札する、命じる  	236
+fury	(名) 激怒  	237
+dose	(名) （薬の）一服、服用量  	238
+royalty	(名) 印税、王族  	239
+census	(名) 国勢調査  	240
+axis	(名) 軸  	241
+vapor	(名) 蒸気  	242
+toll	(名) 通行料、死傷者数  	243
+pedestrian	(名/形) 歩行者、退屈な  	244
+surplus	(名/形) 余剰、黒字  	245
+fraud	(名) 詐欺、不正  	246
+anthropology	(名) 人類学  	247
+regime	(名) 政権、体制  	248
+dismay	(名/動) 落胆、うろたえさせる  	249
+subsidy	(名) 補助金、助成金  	250
+humility	(名) 謙遜、卑下  	251
+bulletin	(名) 掲示、会報  	252
+apprehension	(名) 懸念、理解、逮捕  	253
+liability	(名) 責任、負債、不利になるもの  	254
+epic	(名/形) 叙事詩、壮大な  	255
+reptile	(名) 爬虫類  	256
+teller	(名) 語り手、（銀行の）金銭出納係  	257
+glacier	(名) 氷河  	258
+merchandise	(名) 商品  	259
+delegate	(名/動) 代表、使節、委任する  	260
+auditorium	(名) 講堂、観客席  	261
+interaction	(名) 交流、相互作用  	262
+wholesale	(名/形) 卸売り  	263
+exile	(名/動) 追放、亡命  	264
+beverage	(名) 飲料  	265
+prestige	(名) 名声、威信  	266
+abolition	(名) 廃止  	267
+outrage	(名/動) 激怒、暴行  	268
+timber	(名) 材木  	269
+petition	(名/動) 嘆願、請願  	270
+souvenir	(名) お土産  	271
+friction	(名) 摩擦、不和  	272
+conspiracy	(名) 陰謀  	273
+propaganda	(名) 宣伝活動、プロパガンダ  	274
+doctrine	(名) 教義、主義  	275
+attorney	(名) 弁護士、代理人  	276
+hypothesis	(名) 仮説  	277
+sophomore	(名) （大学・高校の）2年生  	278
+trifle	(名) 些細なこと  	279
+leaflet	(名) チラシ、パンフレット  	280
+disarmament	(名) 軍縮  	281
+bliss	(名) 至福  	282
+ancestry	(名) 家系、祖先  	283
+pulse	(名) 脈拍  	284
+tyranny	(名) 専制政治、暴政  	285
+renewal	(名) 更新、再生  	286
+tribute	(名) 賛辞、貢ぎ物  	287
+bureaucracy	(名) 官僚政治  	288
+emission	(名) 放出、排出  	289
+diagnosis	(名) 診断  	290
+outfit	(名) 服装、道具一式  	291
+fabric	(名) 織物、構造  	292
+superstition	(名) 迷信  	293
+lottery	(名) 宝くじ、抽選  	294
+ballot	(名/動) 投票、投票用紙  	295
+domain	(名) 領域、領土  	296
+core	(名) 核心、芯  	297
+rim	(名) 縁、へり  	298
+geology	(名) 地質学  	299
+hydrogen	(名) 水素  	300
+dialect	(名) 方言  	301
+autobiography	(名) 自叙伝  	302
+guardian	(名) 保護者、後見人  	303
+diplomacy	(名) 外交  	304
+predecessor	(名) 前任者、前身  	305
+catastrophe	(名) 大惨事、破局  	306
+monarchy	(名) 君主制  	307
+usage	(名) 語法、使用法  	308
+altitude	(名) 高度、標高  	309
+compartment	(名) 区画、仕切り客室  	310
+foe	(名) 敵  	311
+latitude	(名) 緯度  	312
+specimen	(名) 標本、見本  	313
+peninsula	(名) 半島  	314
+tariff	(名) 関税  	315
+freight	(名) 貨物運送  	316
+expenditure	(名) 支出、費やすこと  	317
+satire	(名) 風刺  	318
+archeology	(名) 考古学  	319
+brochure	(名) パンフレット  	320
+duration	(名) 持続時間  	321
+criterion	(名) 基準  	322
+optimism	(名) 楽観主義  	323
+textile	(名) 織物、布地  	324
+stationery	(名) 文房具  	325
+threshold	(名) 敷居、入り口、境目  	326
+bias	(名) 偏見  	327
+menace	(名/動) 脅威  	328
+equator	(名) 赤道  	329
+warfare	(名) 戦争状態  	330
+injection	(名) 注射、注入  	331
+ecology	(名) 生態学  	332
+overview	(名) 概観  	333
+appliance	(名) 電気器具  	334
+riot	(名) 暴動  	335
+hazard	(名) 危険、有害要因  	336
+fiscal	(形) 財政上の、会計の  	337
+pathetic	(形) 哀れな、痛々しい  	338
+commonplace	(形/名) ありふれた、平凡な  	339
+statistical	(形) 統計上の  	340
+intensive	(形) 集中的な  	341
+superb	(形) 素晴らしい、見事な  	342
+metropolitan	(形/名) 大都市の  	343
+civic	(形) 市民の  	344
+anonymous	(形) 匿名の  	345
+desolate	(形) 荒涼とした、心細い  	346
+talkative	(形) 話し好きな  	347
+incessant	(形) 絶え間ない  	348
+chaotic	(形) 混沌とした  	349
+outgoing	(形) 社交的な、出発する  	350
+eccentric	(形) 風変わりな  	351
+tiresome	(形) 退屈な、厄介な  	352
+legislative	(形) 立法の  	353
+subjective	(形) 主観的な  	354
+innumerable	(形) 数え切れない  	355
+preferable	(形) 好ましい  	356
+constitutional	(形) 憲法上の、体格の  	357
+approximate	(形/動) およその  	358
+tranquil	(形) 穏やかな  	359
+masculine	(形) 男性の、男らしい  	360
+shabby	(形) みすぼらしい  	361
+mute	(形) 無言の  	362
+subsequent	(形) その後の、次に起こる  	363
+dismal	(形) 陰気な、ひどい  	364
+knowledgeable	(形) 物知りの、精通した  	365
+confidential	(形) 機密の、秘密の  	366
+arrogant	(形) 傲慢な  	367
+picturesque	(形) 絵のような  	368
+straightforward	(形) 単純な、正直な  	369
+notable	(形) 注目すべき  	370
+obstinate	(形) 頑固な  	371
+vulgar	(形) 卑俗な、下品な  	372
+weary	(形) 疲れ果てた  	373
+qualified	(形) 資格のある  	374
+eventual	(形) 最終的な  	375
+libel	(名/動) 名誉毀損  	376
+decisive	(形) 決定的な  	377
+inherent	(形) 本来備わっている  	378
+dogmatic	(形) 独断的な  	379
+static	(形) 静的な、停滞した  	380
+intentional	(形) 意図的な  	381
+perspective	(名) 観点、見方  	382
+legitimate	(形) 合法的な、正当な  	383
+queer	(形) 奇妙な  	384
+indignant	(形) 憤慨した  	385
+cordial	(形) 心のこもった  	386
+spontaneous	(形) 自然発生的な、のびのびとした  	387
+given	(形) 特定の、〜を考慮すると  	388
+steadfast	(形) 断固とした、不変の  	389
+prevalent	(形) 普及している、流行の  	390
+monotonous	(形) 単調な  	391
+virtuous	(形) 徳の高い、高潔な  	392
+sanitary	(形) 衛生の  	393
+alternate	(形/動) 交互の  	394
+variable	(形) 変わりやすい  	395
+exquisite	(形) 非常に美しい、精巧な  	396
+clinical	(形) 臨床の  	397
+melancholy	(名/形) 憂鬱  	398
+indispensable	(形) 不可欠な  	399
+captive	(形/名) 捕らわれた  	400
+wretched	(形) 惨めな、不運な、ひどい  	401
+formidable	(形) 恐るべき、手ごわい  	402
+affectionate	(形) 愛情のこもった  	403
+polar	(形) 極地の、南極（北極）の  	404
+comprehensive	(形) 包括的な、広範囲にわたる  	405
+ingenious	(形) 独創的な、巧妙な  	406
+tolerant	(形) 寛容な、耐性のある  	407
+eloquent	(形) 雄弁な、説得力のある  	408
+clumsy	(形) 不器用な、ぎこちない  	409
+prior	(形) 前の、優先的な  	410
+idealistic	(形) 理想主義的な  	411
+consequent	(形) 結果として生じる  	412
+stout	(形) 頑丈な、どっしりした  	413
+gigantic	(形) 巨大な、膨大な  	414
+orderly	(形) 規律正しい、整然とした  	415
+courteous	(形) 礼儀正しい、丁寧な  	416
+sublime	(形) 崇高な、すばらしい  	417
+intact	(形) 無傷の、そのままの  	418
+drastic	(形) 徹底的な、思い切った  	419
+leftover	(形/名) 残りの、食べ残し  	420
+applicable	(形) 適用できる、妥当な  	421
+invalid	(形/名) 無効な、病弱な  	422
+crude	(形) 天然のままの、未精製の  	423
+municipal	(形) 市の、地方自治体の  	424
+simultaneous	(形) 同時の  	425
+verbal	(形) 言葉の、口頭の  	426
+respective	(形) それぞれの  	427
+linguistic	(形) 言語学の、言葉の  	428
+temperate	(形) 穏やかな、節度のある  	429
+patriotic	(形) 愛国的な  	430
+vertical	(形) 垂直の  	431
+concise	(形) 簡潔な  	432
+insulting	(形) 侮辱的な  	433
+sullen	(形) むっつりした、不機嫌な  	434
+pious	(形) 信心深い  	435
+identical	(形) 全く同一の  	436
+unanimous	(形) 全員一致の  	437
+feminine	(形) 女性の、女性らしい  	438
+challenged	(形) 障害を持つ、挑戦される  	439
+selective	(形) 選択的な、えり好みする  	440
+destined	(形) 運命にある、〜行きの  	441
+weird	(形) 奇妙な、変な  	442
+tedious	(形) 退屈な、長ったらしい  	443
+messy	(形) 散らかった、汚い  	444
+eminent	(形) 著名な、優れた  	445
+insane	(形) 狂気の、正気でない  	446
+humid	(形) 湿気の多い  	447
+perpetual	(形) 永続的な、絶え間ない  	448
+emigrate	(動) （他国へ）移住する  	449
+quick	(形) 速い、すばやい  	450
+yearn	(動) 切望する  	451
+lure	(動/名) 誘惑する、おとり  	452
+stabilize	(動) 安定させる  	453
+delete	(動) 削除する  	454
+facilitate	(動) 促進する、容易にする  	455
+withhold	(動) 保留する、差し控える  	456
+advocate	(動/名) 主張する、支持者  	457
+scan	(動/名) ざっと見る、精査する  	458
+discriminate	(動) 差別する、識別する  	459
+slaughter	(動/名) 虐殺する、屠殺  	460
+ascertain	(動) 確かめる、突き止める  	461
+integrate	(動) 統合する、融和させる  	462
+comply	(動) 従う、応じる  	463
+array	(名/動) 整列、ずらりと並んだもの  	464
+enroll	(動) 登録する、入会する  	465
+abound	(動) 豊富にある  	466
+minimize	(動) 最小限にする  	467
+designate	(動) 指定する、指名する  	468
+transplant	(動/名) 移植する  	469
+arise	(動) 生じる、発生する  	470
+consolidate	(動) 固める、統合整理する  	471
+sneak	(動) こっそり動く  	472
+disregard	(動/名) 無視する、軽視  	473
+ascribe	(動) 〜のせいにする  	474
+persecute	(動) 迫害する  	475
+expire	(動) 期限が切れる  	476
+allocate	(動) 割り当てる  	477
+humiliate	(動) 恥をかかせる  	478
+adhere	(動) 固守する、付着する  	479
+rotate	(動) 回転する、交代する  	480
+commute	(動) 通勤・通学する  	481
+liberate	(動) 解放する  	482
+aspire	(動) 熱望する  	483
+recede	(動) 後退する  	484
+endures	(動) 耐える、持続する  	485
+conserve	(動) 保存する、節約する  	486
+notify	(動) 通知する  	487
+disrupt	(動) 混乱させる、中断させる  	488
+accelerate	(動) 加速させる  	489
+intercept	(動) 遮る、傍受する  	490
+migrate	(動) 移住する、（鳥などが）渡る  	491
+extinguish	(動) （火を）消す、絶滅させる  	492
+shudder	(動/名) 身震いする  	493
+stroll	(動/名) ぶらつく、散歩  	494
+endow	(動) 授ける、寄付する  	495
+intervene	(動) 介入する、介在する  	496
+suffice	(動) 十分である  	497
+nurture	(動/名) 養育する、育てる  	498
+foil	(動/名) 挫折させる、引き立て役  	499
+merge	(動) 合併する、溶け込む  	500
+speculate	(動) 推測する、投機する  	501
+dispense	(動) 分配する、免ずる  	502
+inhibit	(動) 抑制する、妨げる  	503
+offset	(動) 相殺する  	504
+discern	(動) 識別する、見極める  	505
+underlie	(動) 〜の根底にある  	506
+audit	(名/動) 監査、会計監査  	507
+prosecute	(動) 起訴する、遂行する  	508
+compile	(動) 編集する、収集する  	509
+collide	(動) 衝突する  	510
+depict	(動) 描く、描写する  	511
+expel	(動) 追放する、退学させる  	512
+radiation	(名) 放射、放射線  	513
+hybrid	(名/形) 混合物、ハイブリッド  	514
+subordinate	(形/名) 部下の、下位の  	515
+novelty	(名) 珍しさ、斬新さ  	516
+conceit	(名) 自惚れ  	517
+assault	(名/動) 暴行、攻撃  	518
+exploitation	(名) 開発、搾取  	519
+velocity	(名) 速度  	520
+segment	(名) 部分、区分  	521
+goodwill	(名) 善意、親善  	522
+breakthrough	(名) 画期的な進歩、突破口  	523
+posture	(名) 姿勢、態度  	524
+statute	(名) 法令、規則  	525
+entity	(名) 実体、独立体  	526
+bearing	(名) 振る舞い、関係、方向  	527
+jurisdiction	(名) 管轄権、司法権  	528
+clone	(名/動) クローン  	529
+prophecy	(名) 予言  	530
+closure	(名) 閉鎖、終結  	531
+edict	(名) 布告、命令  	532
+invoice	(名) 送り状、請求書  	533
+plaintiff	(名) 原告  	534
+galaxy	(名) 銀河、星雲  	535
+trait	(名) 特徴、特質  	536
+warehouse	(名) 倉庫  	537
+maze	(名) 迷路  	538
+anatomy	(名) 解剖（学）、構造  	539
+hemisphere	(名) 半球  	540
+query	(名/動) 質問、疑問  	541
+integrity	(名) 誠実、完全性  	542
+temperament	(名) 気質、気性  	543
+periodical	(名/形) 定期刊行物  	544
+dilemma	(名) 板挟み、ジレンマ  	545
+aviation	(名) 航空、飛行  	546
+equilibrium	(名) 平衡、均衡  	547
+premium	(名) 保険料、報奨金  	548
+custody	(名) 保管、拘留、親権  	549
+relevance	(名) 関連性、妥当性  	550
+questionnaire	(名) アンケート、質問票  	551
+takeover	(名) 乗っ取り、買収  	552
+pilgrim	(名) 巡礼者  	553
+casualty	(名) 犠牲者、死傷者  	554
+habitat	(名) 生息地  	555
+resignation	(名) 辞職、あきらめ  	556
+eruption	(名) 噴火、勃発  	557
+presidency	(名) 大統領職、会長職  	558
+autonomy	(名) 自治権、自主性  	559
+bully	(名/動) いじめっ子、いじめる  	560
+veteran	(名/形) 退役軍人、ベテラン  	561
+gauge	(名/動) 計器、測定する  	562
+aristocracy	(名) 貴族政治、貴族階級  	563
+spine	(名) 背骨、脊柱  	564
+millennium	(名) 千年間  	565
+creed	(名) 信条  	566
+hierarchy	(名) 階級制、ヒエラルキー  	567
+reactor	(名) 原子炉、反応器  	568
+plea	(名) 嘆願、弁明  	569
+trigger	(名/動) 引き金、誘因  	570
+gymnasium	(名) 体育館  	571
+botany	(名) 植物学  	572
+intuition	(名) 直感  	573
+testament	(名) 証、遺言  	574
+mob	(名) 暴徒、群衆  	575
+encyclopedia	(名) 百科事典  	576
+anguish	(名) 苦痛、苦悶  	577
+charcoal	(名) 炭、木炭  	578
+quota	(名) 割り当て、ノルマ  	579
+epidemic	(名/形) 流行病、伝染性の  	580
+skeleton	(名) 骨格、骸骨  	581
+legacy	(名) 遺産  	582
+coalition	(名) 連合、同盟  	583
+spouse	(名) 配偶者  	584
+bail	(名) 保釈（金）  	585
+hostage	(名) 人質  	586
+right	(名/形) 権利、正しい  	587
+pharmacy	(名) 薬局  	588
+turmoil	(名) 騒乱、混乱  	589
+analogy	(名) 類推、類似  	590
+entrepreneur	(名) 起業家  	591
+novice	(名) 初心者  	592
+fishery	(名) 漁業  	593
+protein	(名) タンパク質  	594
+literacy	(名) 読み書きの能力  	595
+event	(名) 出来事、行事  	596
+practitioner	(名) 実践者、医師、弁護士  	597
+crusade	(名) 改革運動、十字軍  	598
+gender	(名) 性別  	599
+breach	(名/動) 違反、不履行  	600
+lawsuit	(名) 訴訟  	601
+voucher	(名) 引換券、クーポン  	602
+forestry	(名) 林業  	603
+recipient	(名) 受取人  	604
+hypocrisy	(名) 偽善  	605
+streak	(名) 筋、傾向  	606
+compassion	(名) 思いやり、慈悲  	607
+portfolio	(名) 作品集、資産構成  	608
+fragile	(形) 壊れやすい  	609
+pragmatic	(形) 実用的な  	610
+authoritative	(形) 権威のある、信頼できる  	611
+suburban	(形) 郊外の  	612
+irrelevant	(形) 無関係な  	613
+durable	(形) 耐久性のある  	614
+serial	(形/名) 連続した  	615
+literate	(形) 読み書きができる  	616
+affirmative	(形) 肯定的な  	617
+mobile	(形) 移動可能な  	618
+conspicuous	(形) 目立つ  	619
+informative	(形) 有益な、情報に富む  	620
+spacious	(形) 広々とした  	621
+paradoxical	(形) 逆説的な  	622
+compatible	(形) 互換性のある、適合する  	623
+extinct	(形) 絶滅した  	624
+tribal	(形) 部族の  	625
+humanitarian	(形/名) 人道主義の  	626
+archaic	(形) 古風な、時代遅れの  	627
+considerate	(形) 思いやりのある  	628
+defective	(形) 欠陥のある  	629
+integral	(形) 不可欠な、完全な  	630
+ongoing	(形) 進行中の  	631
+adolescent	(形/名) 青春期の  	632
+marginal	(形) わずかな、辺境の  	633
+exhaustive	(形) 徹底的な  	634
+bewildered	(形) 当惑した  	635
+exotic	(形) 外来の、異国情緒のある  	636
+solemn	(形) 荘厳な、真面目な  	637
+juvenile	(形/名) 少年の  	638
+strategic	(形) 戦略的な  	639
+esthetic	(形) 美的な  	640
+frantic	(形) 半狂乱の  	641
+barren	(形) 不毛の  	642
+parental	(形) 親の  	643
+ambiguous	(形) 曖昧な  	644
+frail	(形) 虚弱な  	645
+detached	(形) 分離した、客観的な  	646
+preventive	(形) 予防的な  	647
+literal	(形) 文字通りの  	648
+credible	(形) 信頼できる  	649
+extravagant	(形) 贅沢な、法外な  	650
+misleading	(形) 誤解を招く  	651
+intricate	(形) 複雑な  	652
+superficial	(形) 表面的な  	653
+authentic	(形) 本物の  	654
+innate	(形) 生まれつきの  	655
+disabled	(形) 障害のある  	656
+judicial	(形) 司法の、裁判の  	657
+prehistoric	(形) 先史時代の  	658
+coherent	(形) 一貫した  	659
+lunar	(形) 月の  	660
+enduring	(形) 永続する  	661
+redundant	(形) 余分な、不必要な  	662
+toxic	(形) 有毒な  	663
+explicit	(形) 明白な  	664
+adverse	(形) 不利な、逆の  	665
+implicit	(形) 暗示的な  	666
+sterile	(形) 不妊の、無菌の  	667
+finite	(形) 有限の  	668
+vulnerable	(形) 脆弱な、傷つきやすい  	669
+arbitrary	(形) 恣意的な  	670
+invaluable	(形) 非常に貴重な  	671
+composite	(形) 合成の  	672
+deteriorate	(動) 悪化する  	673
+oversee	(動) 監督する  	674
+solicit	(動) 勧誘する、請う  	675
+animate	(動/形) 活気づける、生命のある  	676
+hover	(動) 空中に止まる、さまよう  	677
+verify	(動) 確かめる  	678
+rig	(動/名) 不正に操作する、装備  	679
+purge	(動/名) 追放する、浄化  	680
+maximize	(動) 最大限にする  	681
+enlighten	(動) 啓発する、教える  	682
+intrigue	(動/名) 興味をそそる、陰謀  	683
+converse	(動/形) 会話する、逆の  	684
+evacuate	(動) 避難させる  	685
+unveil	(動) 明らかにする、披露する  	686
+intimidate	(動) 脅す  	687
+undermine	(動) 弱体化させる  	688
+dub	(動) 呼ぶ、あだ名を付ける  	689
+mobilize	(動) 動員する  	690
+evaporate	(動) 蒸発する  	691
+ponder	(動) 熟考する  	692
+degrade	(動) 悪化させる、格下げする  	693
+activate	(動) 活動させる、作動させる  	694
+incur	(動) （負債などを）被る  	695
+commemorate	(動) 記念する  	696
+subscribe	(動) 定期購読する、署名する  	697
+barter	(動/名) 物物交換する  	698
+peak	(名/動) 頂上、最高潮に達する  	699
+confound	(動) 困惑させる  	700
+infer	(動) 推論する、推測する  	701
+diffuse	(動) 散布する、普及させる  	702
+retrieve	(動) 回収する、検索する  	703
+evoke	(動) 呼び起こす、喚起する  	704
+assimilate	(動) 同化する、吸収する  	705
+publicize	(動) 公表する、宣伝する  	706
+avert	(動) 避ける、そらす  	707
+misuse	(動/名) 悪用する、誤用  	708
+denote	(動) 示す、意味する  	709
+censor	(動/名) 検閲する  	710
+browse	(動) 閲覧する、拾い読みする  	711
+mimic	(動) 真似る  	712
+deter	(動) 思いとどまらせる  	713
+impair	(動) 損なう、減じる  	714
+poke	(動) 突く、つつく  	715
+embody	(動) 具体化する、体現する  	716
+collaborate	(動) 協力する、共同で行う  	717
+redeem	(動) 補う、回復する、換金する  	718
+terminate	(動) 終わらせる、終結する  	719
+attest	(動) 証明する、証言する  	720
+manipulate	(動) 操る、操作する  	721
+validate	(動) 有効にする、認める  	722
+recur	(動) 再発する、繰り返される  	723
+dilute	(動) 薄める  	724
+stink	(動/名) 悪臭を放つ  	725
+foretell	(動) 予言する  	726
+crave	(動) 切望する  	727
+visualize	(動) 視覚化する、思い浮かべる  	728
+agitate	(動) 扇動する、かき混ぜる  	729
+opt	(動) 選択する  	730
+surge	(動/名) 急増する、押し寄せる  	731
+allot	(動) 割り当てる  	732
+renounce	(動) 放棄する、絶交する  	733
+evade	(動) 回避する、逃れる  	734
+obstruct	(動) 妨害する、塞ぐ  	735
+swap	(動/名) 交換する  	736
+hygiene	(名) 衛生、清潔  	737
+briefing	(名) 要旨説明、ブリーフィング  	738
+retrospect	(名) 回顧、追想  	739
+tactics	(名) 戦術、作戦  	740
+obsession	(名) 強迫観念、妄想  	741
+disclosure	(名) 暴露、公表  	742
+verge	(名) 瀬戸際、縁  	743
+layman	(名) 素人、門外漢  	744
+simulation	(名) シミュレーション、模擬実験  	745
+crest	(名) 頂上、紋章  	746
+preoccupation	(名) 没頭、最大の関心事  	747
+excerpt	(名/動) 抜粋、引用  	748
+tutorial	(名) 個別指導  	749
+morale	(名) 士気  	750
+copyright	(名) 著作権  	751
+anarchy	(名) 無政府状態、混乱  	752
+psychiatry	(名) 精神医学  	753
+stereotype	(名) 固定観念  	754
+assassination	(名) 暗殺  	755
+germ	(名) 細菌、芽  	756
+sanction	(名/動) 制裁、認可  	757
+detection	(名) 検出、発見  	758
+vegetation	(名) 植生、植物  	759
+norm	(名) 標準、規範  	760
+bondage	(名) 束縛、奴隷の身分  	761
+sweet	(形/名) 甘い  	762
+poultry	(名) 家禽（ニワトリなど）  	763
+wording	(名) 言い回し  	764
+irrigation	(名) 灌漑  	765
+dynasty	(名) 王朝  	766
+tuition	(名) 授業料  	767
+pact	(名) 協定、条約  	768
+constituent	(名/形) 選挙人、構成要素  	769
+spectrum	(名) スペクトル、範囲  	770
+radius	(名) 半径  	771
+vogue	(名) 流行  	772
+icon	(名) 偶像、アイコン  	773
+descent	(名) 下降、家系  	774
+cuisine	(名) 料理、料理法  	775
+semiconductor	(名) 半導体  	776
+floor	(名) 床、階  	777
+chronicle	(名) 年代記  	778
+syndrome	(名) 症候群  	779
+observatory	(名) 観測所、天文台  	780
+reservoir	(名) 貯水池、蓄え  	781
+vaccine	(名) ワクチン  	782
+petroleum	(名) 石油  	783
+massacre	(名) 大虐殺  	784
+digit	(名) 桁、数字  	785
+providence	(名) 摂理、神意  	786
+spiral	(名/形) 螺旋  	787
+void	(形/名) 空虚な、無効の  	788
+drought	(名) 干ばつ  	789
+congestion	(名) 混雑  	790
+ordeal	(名) 厳しい試練  	791
+infrastructure	(名) インフラ、社会基盤  	792
+sanctuary	(名) 聖域、保護区  	793
+tumor	(名) 腫瘍  	794
+heredity	(名) 遺伝  	795
+curb	(動/名) 抑制する、縁石  	796
+refund	(名/動) 払い戻し  	797
+transit	(名) 通過、輸送  	798
+eclipse	(名) 日食、月食  	799
+parasite	(名) 寄生虫  	800
+specification	(名) 仕様、明細  	801
+momentum	(名) 勢い、はずみ  	802
+diabetes	(名) 糖尿病  	803
+apathy	(名) 無関心  	804
+sequel	(名) 続編、結果  	805
+vendor	(名) 売り主、業者  	806
+mythology	(名) 神話  	807
+duplicate	(名/動) 複製、写し  	808
+fusion	(名) 融合  	809
+preview	(名) 試写、下見  	810
+inventory	(名) 在庫、棚卸し資産  	811
+syllabus	(名) シラバス、講義要綱  	812
+verdict	(名) 評決  	813
+contamination	(名) 汚染  	814
+nucleus	(名) 核、中心  	815
+scrutiny	(名) 精査  	816
+discourse	(名) 会話、談話  	817
+racism	(名) 人種差別  	818
+boulevard	(名) 大通り  	819
+plateau	(名) 高原、停滞期  	820
+tribunal	(名) 法廷  	821
+holocaust	(名) 大虐殺  	822
+depot	(名) 貯蔵所、駅  	823
+valuation	(名) 評価、査定  	824
+kidney	(名) 腎臓  	825
+antiquity	(名) 古代、古さ  	826
+sage	(名) 賢者  	827
+warranty	(名) 保証、保証書  	828
+feat	(名) 功績、偉業  	829
+squad	(名) 班、分隊  	830
+ore	(名) 鉱石  	831
+reunion	(名) 再会、同窓会  	832
+immune	(形) 免疫のある  	833
+reciprocal	(形) 相互の  	834
+cosmic	(形) 宇宙の  	835
+muscular	(形) 筋肉の  	836
+sustainable	(形) 持続可能な  	837
+dubious	(形) 疑わしい  	838
+preparatory	(形) 準備の  	839
+lucrative	(形) 利益の上がる  	840
+adjacent	(形) 隣接した  	841
+sensory	(形) 感覚の  	842
+frugal	(形) 倹約な  	843
+transitional	(形) 過渡期の  	844
+optical	(形) 視覚の、光学の  	845
+astronomical	(形) 天文学の、莫大な  	846
+ruthless	(形) 無慈悲な  	847
+intrinsic	(形) 本来備わっている  	848
+psychic	(形) 精神的な、超能力の  	849
+devoid	(形) 〜を欠いている  	850
+sensitive	(形) 敏感な  	851
+exempt	(形/動) 免除された  	852
+mediocre	(形) 並の、平凡な  	853
+gifted	(形) 才能のある  	854
+supplementary	(形) 補足の  	855
+naive	(形) 世間知らずの  	856
+amiable	(形) 友好的な  	857
+radiant	(形) 輝く、晴れやかな  	858
+discreet	(形) 慎重な、控えめな  	859
+robust	(形) 強健な、たくましい  	860
+lethal	(形) 致命的な  	861
+potent	(形) 強力な  	862
+tangible	(形) 具体的な、触れられる  	863
+radioactive	(形) 放射性の  	864
+futile	(形) 無益な  	865
+multinational	(形) 多国籍の  	866
+scholarly	(形) 学術的な  	867
+militant	(形) 攻撃的な、好戦的な  	868
+erroneous	(形) 誤った  	869
+prone	(形) 〜の傾向がある  	870
+bizarre	(形) 異様な  	871
+notorious	(形) 悪名高い  	872
+fabulous	(形) すばらしい、伝説的な  	873
+skeptical	(形) 懐疑的な  	874
+meager	(形) 乏しい  	875
+hospitable	(形) もてなしのよい  	876
+premature	(形) 早すぎる、時期尚早の  	877
+renowned	(形) 有名な、名高い  	878
+cynical	(形) 冷笑的な  	879
+unprecedented	(形) 前例のない  	880
+humane	(形) 人道的な  	881
+rigorous	(形) 厳格な  	882
+lengthy	(形) 長い  	883
+interim	(形/名) 暫定的な  	884
+chronic	(形) 慢性の  	885
+obsolete	(形) 廃れた  	886
+surgical	(形) 外科の  	887
+futile	(形) (重複データ) 無益な  	888
+myriad	(名/形) 無数  	889
+dreary	(形) 荒涼とした、退屈な  	890
+privileged	(形) 特権のある  	891
+maternal	(形) 母親の  	892
+thermal	(形) 熱の  	893
+affluent	(形) 豊かな  	894
+secular	(形) 世俗的な  	895
+incidental	(形) 付随的な  	896
+fluctuate	(動) 変動する  	897
+retard	(動) 遅らせる  	898
+categorize	(動) 分類する  	899
+pamper	(動) 甘やかす  	900
+dispel	(動) 追い払う  	901
+trespass	(動) 侵入する  	902
+inflate	(動) 膨らませる  	903
+ratify	(動) 批准する  	904
+appraise	(動) 評価する、鑑定する  	905
+necessitate	(動) 必要とする  	906
+enact	(動) 制定する  	907
+curtail	(動) 削減する、短縮する  	908
+succumb	(動) 屈する、負ける  	909
+impart	(動) 伝える、授ける  	910
+avenge	(動) 復讐する  	911
+relinquish	(動) 放棄する、譲渡する  	912
+defer	(動) 延期する、従う  	913
+preclude	(動) 排除する、妨げる  	914
+embed	(動) 埋め込む  	915
+tinker	(動) いじくり回す  	916
+ensue	(動) 続いて起こる  	917
+jeopardize	(動) 危険にさらす  	918
+concur	(動) 同意する、同時に起こる  	919
+salvage	(動/名) 救出する  	920
+abstain	(動) 控える、棄権する  	921
+overhaul	(動/名) 分解修理する  	922
+supersede	(動) 取って代わる  	923
+demolish	(動) 取り壊す  	924
+emulate	(動) 見習う、競い合う  	925
+replicate	(動) 複製する  	926
+savor	(動) じっくり楽しむ、味わう  	927
+beset	(動) 悩ませる  	928
+redress	(動/名) 正す、補償する  	929
+forfeit	(動) 喪失する、没収される  	930
+convene	(動) 招集する  	931
+waive	(動) 放棄する、適用しない  	932
+lag	(動) 遅れる  	933
+pervert	(動) 曲解する、堕落させる  	934
+eradicate	(動) 根絶する  	935
+articulate	(動/形) はっきり述べる、明快な  	936
+renovate	(動) 修復する、刷新する  	937
+overload	(動/名) 負荷をかけすぎる  	938
+deduce	(動) 演繹する、推論する  	939
+outweigh	(動) 上回る  	940
+transact	(動) 取引する  	941
+disperse	(動) 分散させる  	942
+inhale	(動) 吸い込む  	943
+revamp	(動) 改良する、刷新する  	944
+coexist	(動) 共存する  	945
+ignite	(動) 点火する  	946
+quench	(動) 癒やす、抑える  	947
+tamper	(動) いじくる、改ざんする  	948
+implant	(動) 植え付ける、埋め込む  	949
+protein	(名) (重複データ) タンパク質  	950
+deploy	(動) 配置する、展開する  	951
+eject	(動) 排出する、追い出す  	952
+fabricate	(動) 捏造する、組み立てる  	953
+alleviate	(動) 緩和する  	954
+loom	(動) ぼんやり現れる  	955
+encompass	(動) 取り囲む、含む  	956
+reimburse	(動) 払い戻す、賠償する  	957
+bluff	(動/名) はったりをかける  	958
+veto	(名/動) 拒否権  	959
+impede	(動) 妨げる  	960
+embargo	(名/動) 通商禁止  	961
+nausea	(名) 吐き気  	962
+archive	(名/動) 記録保管所  	963
+skull	(名) 頭蓋骨  	964
+venue	(名) 会場、開催地  	965
+jargon	(名) 専門用語  	966
+precipitation	(名) 降水（量）  	967
+mediation	(名) 調停、仲裁  	968
+tally	(名/動) 記録、計算、一致する  	969
+advent	(名) 到来  	970
+roster	(名) 名簿、当番表  	971
+gadget	(名) 道具、装置  	972
+mandate	(名/動) 権限、命令  	973
+buffer	(名) 緩衝材、和らげるもの  	974
+proliferation	(名) 激増、拡散  	975
+courier	(名) 配達人、使者  	976
+stub	(名) 半券、使い残り  	977
+installment	(名) 分割払いの一回分  	978
+amnesty	(名) 恩赦  	979
+metabolism	(名) 新陳代謝  	980
+citation	(名) 引用  	981
+leverage	(名/動) 影響力、てこの作用  	982
+theology	(名) 神学  	983
+fauna	(名) 動物相  	984
+asylum	(名) 避難保護、収容所  	985
+philanthropy	(名) 慈善活動  	986
+dent	(名) 凹み  	987
+glossary	(名) 用語解説  	988
+nitrogen	(名) 窒素  	989
+symmetry	(名) 対称  	990
+debris	(名) 残骸  	991
+sediment	(名) 堆積物  	992
+misconduct	(名) 不正行為  	993
+tuberculosis	(名) 結核  	994
+asthma	(名) ぜんそく  	995
+longitude	(名) 経度  	996
+concord	(名) 一致、調和  	997
+predator	(名) 捕食者  	998
+larva	(名) 幼虫  	999
+alloy	(名) 合金	1000
+referendum	(名) 国民投票	1001
+zinc	(名) 亜鉛	1002
+gymnastics	(名) 体操、体育	1003
+solidarity	(名) 団結、連帯	1004
+membrane	(名) 膜、細胞膜	1005
+payroll	(名) 給与（名簿）	1006
+chromosome	(名) 染色体	1007
+insulation	(名) 絶縁、断熱	1008
+consortium	(名) 共同事業体	1009
+reconnaissance	(名) 偵察	1010
+terrain	(名) 地形、地勢	1011
+fidelity	(名) 忠実、誠実	1012
+arthritis	(名) 関節炎	1013
+niche	(名) 適所、ニッチ	1014
+terminology	(名) 専門用語	1015
+synthesis	(名) 統合、合成	1016
+physiology	(名) 生理学	1017
+enzyme	(名) 酵素	1018
+cavity	(名) 穴、空洞	1019
+flora	(名) 植物相	1020
+precursor	(名) 先駆者、前兆	1021
+erosion	(名) 侵食	1022
+sewage	(名) 下水、汚水	1023
+leukemia	(名) 白血病	1024
+obesity	(名) 肥満	1025
+neutron	(名) 中性子	1026
+debit	(名) 借方	1027
+perimeter	(名) 周囲	1028
+sodium	(名) ナトリウム	1029
+arbitration	(名) 仲裁	1030
+itinerary	(名) 旅行日程	1031
+proximity	(名) 近接	1032
+hub	(名) 中心、拠点	1033
+schizophrenia	(名) 統合失調症	1034
+wizard	(名) 魔法使い	1035
+collateral	(名) 担保	1036
+genus	(名) 属	1037
+mutation	(名) 突然変異	1038
+semester	(名) 学期	1039
+livestock	(名) 家畜	1040
+pathology	(名) 病理学	1041
+tenure	(名) 終身在職権、保有期間	1042
+contingency	(名) 不測の事態	1043
+shortcoming	(名) 欠点	1044
+ordinance	(名) 法令、条例	1045
+affiliate	(動/名) 提携させる、加入させる	1046
+polite	(形) 丁寧な	1047
+registry	(名) 登記、登録	1048
+keynote	(名/形) 基調（の）	1049
+bibliography	(名) 参考文献目録	1050
+probation	(名) 保護観察、見習い期間	1051
+paradigm	(名) パラダイム、枠組み	1052
+urine	(名) 尿	1053
+dissertation	(名) 学位論文	1054
+surveillance	(名) 監視	1055
+combustion	(名) 燃焼	1056
+bilateral	(形) 二国間の	1057
+prerequisite	(名) 必要条件	1058
+ubiquitous	(形) 至る所にある	1059
+demographic	(形) 人口統計の	1060
+repetitive	(形) 繰り返しの	1061
+imminent	(形) 差し迫った	1062
+weary	(形) 疲れ果てた	1063
+complimentary	(形) 無料の、賛辞の	1064
+miscellaneous	(形) 種々雑多な	1065
+feasible	(形) 実行可能な	1066
+stunning	(形) 驚くほど美しい	1067
+agile	(形) 機敏な	1068
+provisional	(形) 暫定的な	1069
+breathtaking	(形) 息をのむような	1070
+incumbent	(形/名) 現職の、義務である	1071
+culinary	(形) 料理の	1072
+peripheral	(形) 周辺の	1073
+empirical	(形) 経験的な、実験に基づいた	1074
+terrestrial	(形) 地球の、陸上の	1075
+audible	(形) 聞こえる	1076
+undue	(形) 過度の	1077
+candid	(形) 率直な	1078
+foremost	(形/副) 最も重要な	1079
+punitive	(形) 罰の、刑罰の	1080
+imperative	(形/名) 緊急の、義務的な	1081
+bland	(形) 穏やかな、味気ない	1082
+infamous	(形) 悪名高い	1083
+sparse	(形) まばらな	1084
+cardiac	(形) 心臓の	1085
+homogeneous	(形) 均質の、同種の	1086
+pristine	(形) 汚れていない、原始の	1087
+illicit	(形) 不法な	1088
+covert	(形) 秘密の、隠れた	1089
+volatile	(形) 変わりやすい、揮発性の	1090
+devastating	(形) 破壊的な	1091
+plausible	(形) 妥当な、もっともらしい	1092
+auxiliary	(形) 補助の	1093
+focal	(形) 焦点の	1094
+deceased	(形/名) 亡くなった	1095
+ultraviolet	(形/名) 紫外線の	1096
+diagonal	(形/名) 対角線の	1097
+perennial	(形) 永続的な	1098
+indigenous	(形) 土着の、固有の	1099
+substantive	(形) 実質的な	1100
+questionable	(形) 疑わしい	1101
+prolific	(形) 多作の	1102
+endangered	(形) 絶滅の危機にある	1103
+consecutive	(形) 連続した	1104
+inaugural	(形) 就任の、最初の	1105
+requisite	(形/名) 必要な	1106
+lacks	(動) 〜を欠いている	1107
+attempted	(形) 試みられた	1108
+paramount	(形) 最高の、至上の	1109
+bogus	(形) 偽の	1110
+possessed	(形) 憑かれた、取り憑かれた	1111
+trenchant	(形) 鋭い、辛辣な	1112
+benign	(形) 慈悲深い、良性の	1113
+fluorescent	(形) 蛍光を発する	1114
+accountable	(形) 説明責任のある	1115
+provocative	(形) 挑発的な	1116
+cardinal	(形/名) 主要な	1117
+versatile	(形) 多才な、多目的な	1118
+deficient	(形) 欠乏した	1119
+impending	(形) 差し迫った	1120
+
+
+
+`;
+
+let words = [];
+let studyQueue = [];
+let currentIndex = 0;
+let isListeningMode = false;
+let listenTimer = null;
+let isPaused = false;
+
+let touchStartPos = { x: 0, y: 0 };
+let touchEndPos = { x: 0, y: 0 };
+
+/* ===== Notes / Drawing state ===== */
+let currentTool = 'pen'; // pen | highlighter | eraser
+let currentColor = '#000000';
+let isDrawing = false;
+let lastPt = null;
+
+let canvas, ctx;
+let canvasDpr = 1;
+
+let memoSaveTimer = null;
+let drawSaveTimer = null;
+
+function memoTextKey(n){ return 'kikutan_memo_text_' + n; }
+function memoInkKey(n){ return 'kikutan_memo_ink_' + n; }
+
+window.onload = function() {
+    const savedData = localStorage.getItem('kikutan_master_tsv');
+    if (savedData) masterTsv = savedData;
+    document.getElementById('data-editor').value = masterTsv.trim();
+
+    const savedTitle = localStorage.getItem('kikutan_theme_title');
+    if (savedTitle) document.getElementById('inpTitle').value = savedTitle;
+    const savedColor = localStorage.getItem('kikutan_theme_color');
+    if (savedColor) document.getElementById('inpColor').value = savedColor;
+
+    updateTheme(false);
+    parseData();
+    refreshMainStats();
+    setupSwipeHandlers();
+    setupNotesUI();
+    window.addEventListener('resize', () => {
+        if (canvas) { requestAnimationFrame(() => { enforceToolbarLayout();
+                adjustCanvasHeightForPhone();
+                resizeCanvasToDisplaySize(); }); }
+    });
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', () => {
+            if (canvas) { requestAnimationFrame(() => { enforceToolbarLayout();
+                adjustCanvasHeightForPhone();
+                resizeCanvasToDisplaySize(); }); }
+        });
+    }
+};
+
+
+function enforceToolbarLayout(){
+    const tb = document.getElementById('draw-toolbar');
+    if (!tb) return;
+
+    // Force the same 2-row layout on ALL devices (prevents CSS conflicts)
+    tb.style.display = 'flex';
+    tb.style.flexDirection = 'column';
+    tb.style.alignItems = 'stretch';
+    tb.style.gap = '8px';
+    tb.style.width = '100%';
+
+    const toolRow = tb.querySelector('.tool-row');
+    if (toolRow){
+        toolRow.style.display = 'flex';
+        toolRow.style.flexDirection = 'row';
+        toolRow.style.flexWrap = 'nowrap';
+        toolRow.style.gap = '6px';
+        toolRow.style.justifyContent = 'space-between';
+        toolRow.style.alignItems = 'center';
+        toolRow.style.width = '100%';
+
+        toolRow.querySelectorAll('.tool-btn').forEach(btn=>{
+            btn.style.flex = '1 1 0';
+            btn.style.minWidth = '0';
+            btn.style.whiteSpace = 'nowrap';
+            btn.style.textAlign = 'center';
+        });
+    }
+
+    const optRow = tb.querySelector('.option-row');
+    if (optRow){
+        optRow.style.display = 'flex';
+        optRow.style.flexDirection = 'row';
+        optRow.style.flexWrap = 'nowrap';
+        optRow.style.gap = '10px';
+        optRow.style.justifyContent = 'space-between';
+        optRow.style.alignItems = 'center';
+        optRow.style.width = '100%';
+    }
+
+    const colorRow = tb.querySelector('.color-row');
+    if (colorRow){
+        colorRow.style.display = 'flex';
+        colorRow.style.flexDirection = 'row';
+        colorRow.style.flexWrap = 'nowrap';
+        colorRow.style.gap = '6px';
+        colorRow.style.alignItems = 'center';
+    }
+
+    const range = tb.querySelector('.range-inline');
+    if (range){
+        range.style.display = 'flex';
+        range.style.alignItems = 'center';
+        range.style.gap = '8px';
+        range.style.whiteSpace = 'nowrap';
+    }
+
+    // Normalize sizes so swatches don't stack on desktop
+    tb.querySelectorAll('.swatch').forEach(s=>{
+        s.style.display = 'inline-block';
+        s.style.width = '30px';
+        s.style.height = '30px';
+    });
+    const cc = document.getElementById('customColor');
+    if (cc){
+        cc.style.display = 'inline-block';
+        cc.style.width = '50px';
+        cc.style.height = '40px';
+    }
+}
+
+function setupNotesUI(){
+    const sizeRange = document.getElementById('pen-size');
+    const sizeLabel = document.getElementById('pen-size-label');
+    if (sizeRange && sizeLabel) sizeLabel.textContent = sizeRange.value;
+    // Defaults
+    applyToolDefaults('pen');
+    sizeRange.addEventListener('input', () => sizeLabel.textContent = sizeRange.value);
+
+    document.getElementById('note-text').addEventListener('input', () => {
+        if (!studyQueue[currentIndex]) return;
+        const n = studyQueue[currentIndex].n;
+        clearTimeout(memoSaveTimer);
+        memoSaveTimer = setTimeout(() => {
+            localStorage.setItem(memoTextKey(n), document.getElementById('note-text').value);
+        }, 250);
+    });
+
+    highlightActiveSwatch();
+
+    canvas = document.getElementById('note-canvas');
+    ctx = canvas.getContext('2d', { willReadFrequently: false });
+
+    canvas.addEventListener('pointerdown', onPointerDown);
+    canvas.addEventListener('pointermove', onPointerMove);
+
+    // iOS: prevent long-press selection / callout while drawing
+    canvas.addEventListener('touchmove', (e) => { if (isDrawing) e.preventDefault(); }, {passive:false});
+    window.addEventListener('pointerup', onPointerUp);
+    window.addEventListener('pointercancel', () => endDrawing(true));
+    canvas.addEventListener('lostpointercapture', () => endDrawing(true));
+    window.addEventListener('blur', () => endDrawing(true));
+
+    ['pointerdown','pointermove','pointerup','touchstart','touchend','mousedown','mouseup','click'].forEach(evt=>{
+        canvas.addEventListener(evt, (e)=> e.stopPropagation(), {passive:false});
+    });
+    document.getElementById('note-text').addEventListener('touchstart', (e)=> e.stopPropagation(), {passive:true});
+    document.getElementById('note-text').addEventListener('touchend', (e)=> e.stopPropagation(), {passive:true});
+    document.getElementById('note-text').addEventListener('click', (e)=> e.stopPropagation());
+    document.getElementById('draw-toolbar').addEventListener('click', (e)=> e.stopPropagation());
+
+
+    enforceToolbarLayout();
+}
+
+function updateTheme(shouldSave = true) {
+    const title = document.getElementById('inpTitle').value;
+    const color = document.getElementById('inpColor').value;
+    document.getElementById('display-title').innerText = title;
+    document.getElementById('page-title').innerText = title;
+    document.documentElement.style.setProperty('--primary', color);
+    document.documentElement.style.setProperty('--primary-light', color + "cc");
+    if (shouldSave) {
+        localStorage.setItem('kikutan_theme_title', title);
+        localStorage.setItem('kikutan_theme_color', color);
+    }
+}
+
+function parseData() {
+    const lines = masterTsv.trim().split('\n');
+    words = lines.map(line => {
+        const parts = line.split('\t');
+        if (parts.length < 3) return null;
+        return { w: parts[0].trim(), m: parts[1].trim(), n: parseInt(parts[2].trim()) };
+    }).filter(x => x);
+}
+
+function refreshMainStats() {
+    // 登録数は「番号の最小〜最大」から算出（例: 707〜2126 → 1420語）
+    // ※欠番がある場合でも、ユーザーの要望どおり “範囲” を表示します
+    const nums = words.map(w => Number(w.n)).filter(n => Number.isFinite(n));
+    let count = words.length;
+    if (nums.length) {
+        const minN = Math.min(...nums);
+        const maxN = Math.max(...nums);
+        count = (maxN - minN + 1);
+    }
+    document.getElementById('totalCount').innerText = count;
+}
+
+function updateMasterData() {
+    masterTsv = document.getElementById('data-editor').value;
+    localStorage.setItem('kikutan_master_tsv', masterTsv);
+    parseData();
+    refreshMainStats();
+    alert("データを保存しました。");
+}
+
+function handleQuickRangeChange(val) {
+    if (!val) return;
+    const parts = val.split('-');
+    document.getElementById('inpStart').value = parts[0];
+    document.getElementById('inpEnd').value = parts[1];
+}
+
+function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+function goHome() {
+    stopAllAudio();
+    isPaused = true;
+    showScreen('screen-setup');
+}
+
+function stopAllAudio() {
+    if (listenTimer) {
+        clearTimeout(listenTimer);
+        listenTimer = null;
+    }
+    window.speechSynthesis.cancel();
+}
+
+function getStatus(n) {
+    const key = 'kikutan_stat_' + n;
+    const data = localStorage.getItem(key);
+    return data ? JSON.parse(data) : { level: 0, result: "new" };
+}
+
+function saveStatus(n, status) {
+    localStorage.setItem('kikutan_stat_' + n, JSON.stringify(status));
+}
+
+function startApp(mode) {
+    stopAllAudio();
+    const startNum = Number(document.getElementById('inpStart').value.trim()) || 1;
+    const endNum = Number(document.getElementById('inpEnd').value.trim()) || 9999;
+    const onlyReview = document.getElementById('chkReview').checked;
+    const filterLevel = document.getElementById('selLevel').value;
+
+    studyQueue = words.filter(item => {
+        const itemNo = Number(item.n);
+        if (itemNo < startNum || itemNo > endNum) return false;
+        const st = getStatus(item.n);
+        if (onlyReview && st.result !== 'unknown') return false;
+        if (filterLevel !== 'all' && String(st.level) !== String(filterLevel)) return false;
+        return true;
+    });
+
+    if (studyQueue.length === 0) {
+        alert("条件に一致する単語がありません。");
+        return;
+    }
+
+    currentIndex = 0;
+    isListeningMode = (mode === 'listen');
+    isPaused = false;
+    document.getElementById('controls-card').className = isListeningMode ? 'hidden' : '';
+    document.getElementById('controls-listen').className = isListeningMode ? '' : 'hidden text-center';
+
+    showScreen('screen-study');
+    renderCard();
+}
+
+function renderCard() {
+    if (listenTimer) clearTimeout(listenTimer);
+    if (currentIndex < 0) currentIndex = 0;
+    if (currentIndex >= studyQueue.length) {
+        alert("最後まで到達しました。");
+        goHome();
+        return;
+    }
+
+    const item = studyQueue[currentIndex];
+    const status = getStatus(item.n);
+
+    document.getElementById('progress-text').innerText = `${currentIndex + 1} / ${studyQueue.length} (No.${item.n})`;
+    document.getElementById('txt-word').innerText = item.w;
+    document.getElementById('txt-meaning').innerText = item.m;
+    document.getElementById('txt-meaning').classList.add('hidden');
+    document.getElementById('btn-show-meaning').classList.remove('hidden');
+
+    document.getElementById('badge-lv').innerText = `LV.${status.level}`;
+    document.querySelectorAll('.level-btn').forEach((btn, idx) => {
+        btn.classList.toggle('active', (idx + 1 == status.level));
+    });
+
+    loadNotesFor(item.n);
+
+    if (!isPaused) {
+        speak(item.w, 'en-US', () => {
+            if (isListeningMode && !isPaused) {
+                listenTimer = setTimeout(() => {
+                    if (isPaused) return;
+                    revealMeaning(() => {
+                        if (isListeningMode && !isPaused) {
+                            listenTimer = setTimeout(() => {
+                                if (isListeningMode && !isPaused) {
+                                    currentIndex++;
+                                    renderCard();
+                                }
+                            }, 1500); 
+                        }
+                    });
+                }, 800);
+            }
+        });
+    }
+}
+
+function manualMove(offset) {
+    stopAllAudio();
+    const nextIdx = currentIndex + offset;
+    if (nextIdx < 0 || nextIdx >= studyQueue.length) return;
+    currentIndex = nextIdx;
+    renderCard();
+}
+
+function revealMeaning(callback) {
+    const el = document.getElementById('txt-meaning');
+    const btn = document.getElementById('btn-show-meaning');
+    if (el.classList.contains('hidden')) {
+        el.classList.remove('hidden');
+        btn.classList.add('hidden');
+        const cleanText = studyQueue[currentIndex].m.replace(/\(.*\)/g, '').replace(/（.*）/g, '').replace(/[a-z]/gi, '');
+        speak(cleanText, 'ja-JP', callback);
+    } else if (callback) {
+        callback();
+    }
+}
+
+function playWord(e){
+    if (e) { e.stopPropagation(); e.preventDefault(); }
+    if (!studyQueue[currentIndex]) return;
+    speak(studyQueue[currentIndex].w, 'en-US');
+}
+
+function speak(text, lang, callback) {
+    window.speechSynthesis.cancel();
+    const uttr = new SpeechSynthesisUtterance(text);
+    uttr.lang = lang;
+    uttr.rate = 1.0;
+    uttr.onend = () => { if (callback) callback(); };
+    uttr.onerror = () => { if (callback) callback(); };
+    window.speechSynthesis.speak(uttr);
+}
+
+function answer(isKnown) {
+    const item = studyQueue[currentIndex];
+    const st = getStatus(item.n);
+    st.result = isKnown ? 'known' : 'unknown';
+    saveStatus(item.n, st);
+    showSwipeHint(isKnown ? "わかる" : "わからない");
+    setTimeout(() => manualMove(1), 200);
+}
+
+function showSwipeHint(text) {
+    const hint = document.getElementById('swipe-hint');
+    hint.innerText = text;
+    hint.style.opacity = "1";
+    setTimeout(() => { hint.style.opacity = "0"; }, 500);
+}
+
+function setLevel(lv) {
+    const item = studyQueue[currentIndex];
+    const st = getStatus(item.n);
+    st.level = lv;
+    saveStatus(item.n, st);
+    document.getElementById('badge-lv').innerText = `LV.${lv}`;
+    document.querySelectorAll('.level-btn').forEach((btn, idx) => {
+        btn.classList.toggle('active', (idx + 1 == lv));
+    });
+}
+
+function togglePause() {
+    isPaused = !isPaused;
+    const btn = document.getElementById('btn-pause');
+    const label = document.getElementById('listen-status-label');
+    if (isPaused) {
+        btn.innerText = "再開";
+        label.innerText = "PAUSED";
+        stopAllAudio();
+    } else {
+        btn.innerText = "一時停止";
+        label.innerText = "AUTO PLAYING...";
+        renderCard();
+    }
+}
+
+/* ===== Swipe (tap -> replay audio) ===== */
+function setupSwipeHandlers() {
+    const card = document.getElementById('card-area');
+
+    card.addEventListener('touchstart', (e) => {
+        if (e.target.closest('.note-area')) return;
+        touchStartPos.x = e.touches[0].clientX;
+        touchStartPos.y = e.touches[0].clientY;
+    }, {passive:true});
+
+    card.addEventListener('touchend', (e) => {
+        if (e.target.closest('.note-area')) return;
+        touchEndPos.x = e.changedTouches[0].clientX;
+        touchEndPos.y = e.changedTouches[0].clientY;
+        handleSwipe();
+    }, {passive:true});
+
+    card.addEventListener('click', (e) => {
+        if (e.target.closest('button') || e.target.closest('.note-area') || e.target.closest('textarea')) return;
+        playWord(e);
+    });
+}
+
+function handleSwipe() {
+    const dx = touchEndPos.x - touchStartPos.x;
+    const dy = touchEndPos.y - touchStartPos.y;
+    const absX = Math.abs(dx);
+    const absY = Math.abs(dy);
+    const threshold = 50; 
+
+    if (Math.max(absX, absY) < threshold) {
+        playWord();
+        return;
+    }
+
+    if (absX > absY) {
+        if (dx > 0) { manualMove(-1); } else { manualMove(1); }
+    } else {
+        if (dy > 0) { answer(false); } else { answer(true); }
+    }
+}
+
+/* ===== Notes storage & Drawing ===== */
+function loadNotesFor(n){
+    const text = localStorage.getItem(memoTextKey(n)) || '';
+    document.getElementById('note-text').value = text;
+
+    requestAnimationFrame(() => {
+        adjustCanvasHeightForPhone();
+        enforceToolbarLayout();
+                adjustCanvasHeightForPhone();
+                resizeCanvasToDisplaySize();
+        clearCanvasPixels();
+        const ink = localStorage.getItem(memoInkKey(n));
+        if (ink) {
+            const img = new Image();
+            img.onload = () => {
+                ctx.save();
+                ctx.setTransform(1,0,0,1,0,0);
+                ctx.globalAlpha = 1;
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                ctx.restore();
+            };
+            img.src = ink;
+        }
+    });
+}
+
+function adjustCanvasHeightForPhone(){
+    // Only for small screens (iPhone etc.)
+    if (!canvas) return;
+    if (window.matchMedia && !window.matchMedia('(max-width: 480px)').matches) return;
+
+    const wrap = document.getElementById('canvas-wrap');
+    const card = document.getElementById('card-area');
+    if (!wrap || !card) return;
+
+    // We want the canvas to fit INSIDE the white card, above the blue area (controls).
+    // So we measure from the canvas top to the card bottom.
+    const cardRect = card.getBoundingClientRect();
+    const canvasRect = canvas.getBoundingClientRect();
+
+    const bottomPadding = 10; // small breathing room inside card
+    let desiredCssH = Math.floor(cardRect.bottom - canvasRect.top - bottomPadding);
+
+    // Keep the handwriting area compact on phones (~2/3 of the available space)
+    desiredCssH = Math.floor(desiredCssH * 0.55);
+
+    // If the keyboard is open, visualViewport height shrinks; keep within viewport too.
+    const vv = window.visualViewport;
+    const viewportH = vv ? vv.height : window.innerHeight;
+    desiredCssH = Math.min(desiredCssH, Math.floor(viewportH - canvasRect.top - bottomPadding));
+
+    // Safety limits
+    desiredCssH = Math.max(120, Math.min(desiredCssH, 210));
+
+    wrap.style.height = desiredCssH + 'px';
+    canvas.style.height = '100%';
+}
+
+
+function resizeCanvasToDisplaySize(){
+    const dpr = window.devicePixelRatio || 1;
+    canvasDpr = dpr;
+
+    const rect = canvas.getBoundingClientRect();
+    const newW = Math.max(1, Math.round(rect.width * dpr));
+    const newH = Math.max(1, Math.round(rect.height * dpr));
+    if (canvas.width !== newW || canvas.height !== newH) {
+        const old = document.createElement('canvas');
+        old.width = canvas.width;
+        old.height = canvas.height;
+        old.getContext('2d').drawImage(canvas, 0, 0);
+
+        canvas.width = newW;
+        canvas.height = newH;
+        ctx.drawImage(old, 0, 0, old.width, old.height, 0, 0, canvas.width, canvas.height);
+    }
+}
+
+function clearCanvasPixels(){
+    ctx.save();
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.restore();
+}
+
+function screenToCanvasPoint(e){
+    const rect = canvas.getBoundingClientRect();
+    const x = (e.clientX - rect.left) * canvasDpr;
+    const y = (e.clientY - rect.top) * canvasDpr;
+    return {x, y};
+}
+
+function onPointerDown(e){
+    if (!studyQueue[currentIndex]) return;
+    if (e) { e.preventDefault(); }
+    try { canvas.setPointerCapture(e.pointerId); } catch(_) {}
+    isDrawing = true;
+    lastPt = screenToCanvasPoint(e);
+    drawDot(lastPt.x, lastPt.y);
+    scheduleInkSave();
+}
+
+function onPointerMove(e){
+    if (e) { e.preventDefault(); }
+    // If the user released the mouse button but we missed pointerup (common when leaving the window),
+    // stop drawing immediately.
+    if (e.pointerType === 'mouse' && isDrawing && (e.buttons === 0)) {
+        endDrawing(true);
+        return;
+    }
+    if (!isDrawing || !lastPt) return;
+    const pt = screenToCanvasPoint(e);
+    drawLine(lastPt.x, lastPt.y, pt.x, pt.y);
+    lastPt = pt;
+}
+
+function endDrawing(saveNow=true){
+    if (!isDrawing) return;
+    isDrawing = false;
+    lastPt = null;
+    if (saveNow) scheduleInkSave(true);
+}
+
+function onPointerUp(e){
+    endDrawing(true);
+}
+
+function currentLineWidth(){
+    const v = parseInt(document.getElementById('pen-size').value, 10) || 6;
+    if (currentTool === 'highlighter') return v * 2.8;
+    if (currentTool === 'eraser') return v * 2.6;
+    return v;
+}
+
+function applyToolStyle(){
+    const lw = currentLineWidth();
+    ctx.lineWidth = lw;
+    ctx.lineJoin = 'round';
+    ctx.shadowBlur = 0;
+    ctx.shadowColor = 'transparent';
+
+    if (currentTool === 'eraser'){
+        ctx.lineCap = 'round';
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.globalAlpha = 1.0;
+        ctx.strokeStyle = 'rgba(0,0,0,1)';
+        ctx.fillStyle = 'rgba(0,0,0,1)';
+        return;
+    }
+
+    if (currentTool === 'highlighter'){
+        // Marker-like: semi-transparent paint on top (not multiply),
+        // with a flatter tip feel.
+        ctx.lineCap = 'butt';
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.globalAlpha = 0.22;
+        ctx.strokeStyle = currentColor;
+        ctx.fillStyle = currentColor;
+
+        // tiny softness at edges
+        ctx.shadowBlur = Math.max(0, lw * 0.08);
+        ctx.shadowColor = currentColor;
+        return;
+    }
+
+    // normal pen
+    ctx.lineCap = 'round';
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = 1.0;
+    ctx.strokeStyle = currentColor;
+    ctx.fillStyle = currentColor;
+}
+
+function drawDot(x,y){
+    ctx.save();
+    applyToolStyle();
+    ctx.beginPath();
+    ctx.arc(x, y, ctx.lineWidth/2, 0, Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+}
+
+function drawLine(x1,y1,x2,y2){
+    ctx.save();
+    applyToolStyle();
+    ctx.beginPath();
+    ctx.moveTo(x1,y1);
+    ctx.lineTo(x2,y2);
+    ctx.stroke();
+    ctx.restore();
+    scheduleInkSave();
+}
+
+function scheduleInkSave(immediate=false){
+    if (!studyQueue[currentIndex]) return;
+    const n = studyQueue[currentIndex].n;
+    clearTimeout(drawSaveTimer);
+    const doSave = () => {
+        try{
+            const dataUrl = canvas.toDataURL('image/png');
+            localStorage.setItem(memoInkKey(n), dataUrl);
+        }catch(err){
+            // ignore quota errors
+        }
+    };
+    if (immediate) doSave();
+    else drawSaveTimer = setTimeout(doSave, 350);
+}
+
+function applyToolDefaults(tool){
+    const sizeRange = document.getElementById('pen-size');
+    const sizeLabel = document.getElementById('pen-size-label');
+
+    if (tool === 'pen'){
+        currentColor = '#000000';
+        if (sizeRange) sizeRange.value = '5';
+    } else if (tool === 'highlighter'){
+        currentColor = '#e63946'; // red marker
+        if (sizeRange) sizeRange.value = '15';
+    }
+    if (sizeRange && sizeLabel) sizeLabel.textContent = sizeRange.value;
+    const cc=document.getElementById('customColor'); if (cc) cc.value = currentColor;
+    highlightActiveSwatch();
+}
+
+function setTool(tool, e){
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    currentTool = tool;
+
+    // When switching tools, also switch to the requested defaults
+    if (tool === 'pen' || tool === 'highlighter'){
+        applyToolDefaults(tool);
+    }
+
+    document.getElementById('tool-pen').classList.toggle('active', tool === 'pen');
+    document.getElementById('tool-highlighter').classList.toggle('active', tool === 'highlighter');
+    document.getElementById('tool-eraser').classList.toggle('active', tool === 'eraser');
+}
+
+function pickColor(color, e){
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    currentColor = color;
+    document.getElementById('customColor').value = color;
+    highlightActiveSwatch();
+    if (currentTool === 'eraser') setTool('pen', e);
+}
+function highlightActiveSwatch(){
+    document.querySelectorAll('.swatch').forEach(el=>{
+        el.classList.toggle('active', el.getAttribute('data-color') === currentColor);
+    });
+}
+
+function clearCanvas(e){
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    if (!studyQueue[currentIndex]) return;
+    const n = studyQueue[currentIndex].n;
+    clearCanvasPixels();
+    localStorage.removeItem(memoInkKey(n));
+}
+
+function clearAllNotes(e){
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    if (!studyQueue[currentIndex]) return;
+    const n = studyQueue[currentIndex].n;
+    if (!confirm('このカードの「文字メモ」と「手書きメモ」を全て消します。よろしいですか？')) return;
+    document.getElementById('note-text').value = '';
+    localStorage.removeItem(memoTextKey(n));
+    clearCanvas(e);
+}
+
+/* ===== List screen ===== */
+function showList() {
+    showScreen('screen-list');
+    renderListTable();
+}
+
+function renderListTable() {
+    const tbody = document.querySelector('#list-table tbody');
+    const filterLv = document.getElementById('selListLevelFilter').value;
+    const filterResult = document.getElementById('selListResultFilter').value;
+    tbody.innerHTML = '';
+    const fragment = document.createDocumentFragment();
+
+    words.forEach(item => {
+        const st = getStatus(item.n);
+        if (filterLv !== 'all' && String(st.level) !== filterLv) return;
+        if (filterResult !== 'all') {
+            if (filterResult === 'unknown' && st.result !== 'unknown') return;
+            if (filterResult === 'new' && st.result !== 'new') return;
+        }
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${item.n}</td>
+            <td><div style="font-weight:bold; color:var(--primary)">${item.w}</div><div style="font-size:0.8em; color:#666">${item.m}</div></td>
+            <td style="text-align:center"><select onchange="updateLv(${item.n}, this.value)">
+                ${[0,1,2,3,4,5].map(v => `<option value="${v}" ${st.level==v?'selected':''}>${v}</option>`).join('')}
+            </select></td>`;
+        fragment.appendChild(tr);
+    });
+    tbody.appendChild(fragment);
+}
+
+function updateLv(n, lv) {
+    const st = getStatus(n);
+    st.level = parseInt(lv);
+    saveStatus(n, st);
+}
+</script>
+</body>
+</html>
