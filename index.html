@@ -517,13 +517,6 @@
     /* Ensure draw-toolbar is column on desktop too (CSS safety net) */
     .note-area #draw-toolbar{ flex-direction: column !important; align-items: stretch !important; }
 
-
-/* ===== Allow text selection for vocabulary (iPhone copy OK) ===== */
-.word-text{
-  -webkit-user-select: text !important;
-  user-select: text !important;
-  -webkit-touch-callout: default !important;
-}
 </style>
 </head>
 <body>
@@ -2153,7 +2146,7 @@ function renderCard() {
                                     currentIndex++;
                                     renderCard();
                                 }
-                            }, 1500); 
+                            }, 400); 
                         }
                     });
                 }, 800);
@@ -2212,7 +2205,7 @@ function showSwipeHint(text) {
     const hint = document.getElementById('swipe-hint');
     hint.innerText = text;
     hint.style.opacity = "1";
-    setTimeout(() => { hint.style.opacity = "0"; }, 500);
+    setTimeout(() => { hint.style.opacity = "0"; }, 150);
 }
 
 function setLevel(lv) {
