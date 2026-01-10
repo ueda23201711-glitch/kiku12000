@@ -1,0 +1,20 @@
+{
+  "name": "キクタン Super 12000",
+  "short_name": "Super12000",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#356EA6",
+  "theme_color": "#356EA6",
+  "icons": [
+    {
+      "src": "./icons/super12000-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./icons/super12000-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -6,8 +6,8 @@
 <title id="page-title">キクタンSuper12000</title>
 <style>
     :root { 
-        --primary: #4B1E83; 
-        --primary-light: #4B1E83cc;
+        --primary: #356EA6; 
+        --primary-light: #356EA6cc;
         --bg: #f0f7f9; 
         --card-bg: #ffffff; 
         --text: #1c1c1e; 
@@ -374,7 +374,7 @@
 
     /* Prevent iOS selection/callout while drawing */
     #card-area, .note-area, .draw-toolbar, .tool-row, .option-row, .range-inline, .color-row,
-    .tool-btn, .swatch, #pen-size-label, #btn-show-meaning, #txt-word, #txt-meaning {
+    .tool-btn, .swatch, #pen-size-label, #btn-show-meaning,  {
         -webkit-user-select: none;
         user-select: none;
         -webkit-touch-callout: none;
@@ -518,14 +518,48 @@
     .note-area #draw-toolbar{ flex-direction: column !important; align-items: stretch !important; }
 
 
-    /* ===== Allow text selection for word/meaning (iOS copy) ===== */
-    #txt-word, #txt-meaning, .word-text, .meaning-text{
-        -webkit-user-select: text !important;
-        user-select: text !important;
-        -webkit-touch-callout: default !important;
-    }
+/* === Allow text selection on word/meaning (iPhone long-press copy) === */
+.word-text, .meaning-text, {
+  -webkit-user-select: text !important;
+  user-select: text !important;
+  -webkit-touch-callout: default !important;
+  touch-action: auto !important;
+  pointer-events: auto !important;
+}
 
 </style>
+
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon-180.png">
+<link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="./icons/favicon-16.png">
+<meta name="theme-color" content="#356EA6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="キクタンSuper12000">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<link rel="apple-touch-startup-image" href="./splash/splash-1290x2796.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./splash/splash-1290x2796.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+<link rel="apple-touch-startup-image" href="./splash/splash-1179x2556.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./splash/splash-1179x2556.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+<link rel="apple-touch-startup-image" href="./splash/splash-1170x2532.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./splash/splash-1170x2532.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+<link rel="apple-touch-startup-image" href="./splash/splash-1125x2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./splash/splash-1125x2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+<link rel="apple-touch-startup-image" href="./splash/splash-828x1792.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./splash/splash-828x1792.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+<link rel="apple-touch-startup-image" href="./splash/splash-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./splash/splash-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+<link rel="apple-touch-startup-image" href="./splash/splash-640x1136.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./splash/splash-640x1136.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+<link rel="apple-touch-startup-image" href="./splash/splash-2048x2732.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./splash/splash-2048x2732.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+<link rel="apple-touch-startup-image" href="./splash/splash-1668x2388.png" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./splash/splash-1668x2388.png" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+<link rel="apple-touch-startup-image" href="./splash/splash-1668x2224.png" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./splash/splash-1668x2224.png" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+<link rel="apple-touch-startup-image" href="./splash/splash-1536x2048.png" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./splash/splash-1536x2048.png" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
 </head>
 <body>
 
@@ -540,7 +574,7 @@
             </div>
             <div class="config-row">
                 <label>テーマカラー</label>
-                <input type="color" id="inpColor" value="#4B1E83" onchange="updateTheme()">
+                <input type="color" id="inpColor" value="#356EA6" onchange="updateTheme()">
             </div>
         </div>
 
@@ -1835,7 +1869,28 @@ impending	(形) 差し迫った	1120
 
 
 
+
 `;
+
+
+let isSelectingText = false;
+let suppressSwipeUntil = 0;
+
+// Detect text selection (iOS long-press copy)
+document.addEventListener("selectionchange", () => {
+    const sel = window.getSelection ? window.getSelection() : null;
+    const txt = sel ? String(sel.toString() || "") : "";
+    isSelectingText = txt.length > 0;
+    if (isSelectingText) suppressSwipeUntil = Date.now() + 800; // small grace period
+});
+
+// If user starts pressing on word/meaning, suppress swipe (even before selectionchange fires)
+function markSuppressSwipeFromTarget(target){
+    if (!target) return;
+    if (target.closest && (target.closest("#txt-word") || target.closest("#txt-meaning") || target.closest(".word-text") || target.closest(".meaning-text"))){
+        suppressSwipeUntil = Date.now() + 1200;
+    }
+}
 
 let words = [];
 let studyQueue = [];
@@ -2248,12 +2303,16 @@ function setupSwipeHandlers() {
 
     card.addEventListener('touchstart', (e) => {
         if (e.target.closest('.note-area')) return;
+        markSuppressSwipeFromTarget(e.target);
+        if (isSelectingText || Date.now() < suppressSwipeUntil) return;
         touchStartPos.x = e.touches[0].clientX;
         touchStartPos.y = e.touches[0].clientY;
     }, {passive:true});
 
     card.addEventListener('touchend', (e) => {
         if (e.target.closest('.note-area')) return;
+        markSuppressSwipeFromTarget(e.target);
+        if (isSelectingText || Date.now() < suppressSwipeUntil) return;
         touchEndPos.x = e.changedTouches[0].clientX;
         touchEndPos.y = e.changedTouches[0].clientY;
         handleSwipe();
@@ -2266,6 +2325,7 @@ function setupSwipeHandlers() {
 }
 
 function handleSwipe() {
+    if (isSelectingText || Date.now() < suppressSwipeUntil) return;
     const dx = touchEndPos.x - touchStartPos.x;
     const dy = touchEndPos.y - touchStartPos.y;
     const absX = Math.abs(dx);
@@ -2594,18 +2654,24 @@ function updateLv(n, lv) {
     saveStatus(n, st);
 }
 
-/* ===== Enable long-press select/copy on iOS for word/meaning ===== */
+// === Make word/meaning selectable (avoid swipe handlers cancelling long-press) ===
 (function(){
+  const w = document.getElementById('txt-word');
+  const m = document.getElementById('txt-meaning');
   const stop = (e)=>{ e.stopPropagation(); };
-  const els = [document.getElementById('txt-word'), document.getElementById('txt-meaning')].filter(Boolean);
-  els.forEach(el=>{
-    // Prevent swipe handlers from hijacking the gesture
-    el.addEventListener('pointerdown', stop, {passive:true});
-    el.addEventListener('touchstart', stop, {passive:true});
-    el.addEventListener('mousedown', stop, {passive:true});
-  });
+  if(w){ w.addEventListener('pointerdown', stop, {passive:true}); w.addEventListener('touchstart', stop, {passive:true}); }
+  if(m){ m.addEventListener('pointerdown', stop, {passive:true}); m.addEventListener('touchstart', stop, {passive:true}); }
 })();
 
 </script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  });
+}
+</script>
+
 </body>
 </html>
